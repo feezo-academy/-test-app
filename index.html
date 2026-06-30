@@ -1,1 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FeeZoapp Admin Console</title>
+<meta name="theme-color" content="#0a1628">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#f5f7fb; --card:#fff; --border:#e3e6ec; --border-strong:#c8cfdc;
+  --text:#10131a; --text-2:#4a5160; --text-3:#8a8f9c;
+  --accent:#5b7cc4; --accent-dark:#3b5fa3;
+  --green:#16a34a; --green-bg:#dcfce7;
+  --amber:#d97706; --amber-bg:#fef3c7;
+  --red:#dc2626; --red-bg:#fee2e2;
+  --blue:#2563eb; --blue-bg:#dbeafe;
+  --purple:#7c3aed; --purple-bg:#ede9fe;
+  --gray:#6b7280; --gray-bg:#f3f4f6;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+}
+body{font-family:'Poppins','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
+/* LOGIN SCREEN */
+#loginScreen{position:fixed;inset:0;background:linear-gradient(180deg,#0f1f3d 0%,#0a1628 100%);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden;}
+.meteor{position:absolute;width:4px;height:4px;background:#fff;border-radius:50%;box-shadow:0 0 10px 2px rgba(255,255,255,.9);opacity:0;z-index:0;pointer-events:none;}
+.meteor.m1{bottom:-5%;left:-5%;animation:meteorFall 5.5s linear infinite;animation-delay:0s;}
+.meteor.m2{bottom:-5%;left:20%;animation:meteorFall 7s linear infinite;animation-delay:2.4s;}
+.meteor.m3{bottom:-5%;left:40%;animation:meteorFall 6s linear infinite;animation-delay:4s;}
+@keyframes meteorFall{0%{opacity:0;transform:translate(0,0);}8%{opacity:.95;}92%{opacity:.95;}100%{opacity:0;transform:translate(90vw,-100vh);}}
+.star{position:absolute;background:#fff;border-radius:50%;z-index:0;pointer-events:none;animation:twinkle ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(.7);}50%{opacity:.9;transform:scale(1.1);}}
+.login-box{position:relative;z-index:2;background:#fff;box-shadow:0 14px 40px rgba(0,0,0,.2);border-radius:22px;padding:32px 26px;width:100%;max-width:360px;text-align:center;}
+.login-logo{width:50px;height:50px;background:#e8392f;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;color:#fff;font-weight:800;}
+.login-title{font-size:20px;font-weight:800;color:#10131a;margin-bottom:4px;}
+.login-sub{font-size:13px;color:#4a5160;margin-bottom:6px;}
+.admin-badge{display:inline-block;background:#e8392f;color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:.5px;margin-bottom:22px;}
+.login-field{margin-bottom:16px;text-align:left;}
+.login-field label{display:block;font-size:12px;color:#3a4150;font-weight:600;margin-bottom:6px;}
+.login-field .field-wrap{display:flex;align-items:center;gap:10px;border:1px solid #e3e6ec;border-radius:10px;padding:11px 14px;}
+.login-field .field-wrap:focus-within{border-color:#e8392f;}
+.login-field input{flex:1;width:100%;padding:0;background:transparent;border:none;color:#1f2430;font-size:14px;outline:none;font-family:inherit;}
+.login-field input::placeholder{color:#b8bcc6;}
+.login-error{display:none;background:#fde8e8;border:1px solid #f5b5b5;color:#b91c1c;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:14px;text-align:left;line-height:1.5;}
+.login-error.show{display:block;}
+.btn-login{width:100%;padding:13px;background:#e8392f;border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.3px;margin-top:6px;}
+.btn-login:hover{opacity:.92;}
+.btn-login:disabled{opacity:.5;cursor:not-allowed;}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* APP SHELL */
+#adminApp{display:none;min-height:100vh;}
+#adminApp.active{display:flex;flex-direction:column;}
+
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--shadow);}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.topbar-logo{width:36px;height:36px;background:#e8392f;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px;}
+.topbar-title{font-size:15px;font-weight:700;color:var(--text);line-height:1.2;}
+.topbar-title small{font-size:10px;color:var(--text-3);font-weight:500;display:block;margin-top:1px;}
+.topbar-right{display:flex;align-items:center;gap:14px;font-size:13px;color:var(--text-2);}
+.signout-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--text-2);cursor:pointer;font-family:inherit;}
+.signout-btn:hover{background:var(--gray-bg);}
+
+/* ACTIVE ELEVATION BANNER */
+.elevation-banner{display:none;background:linear-gradient(90deg,#7c3aed,#5b21b6);color:#fff;padding:9px 20px;font-size:13px;font-weight:600;display:none;align-items:center;justify-content:space-between;gap:14px;position:sticky;top:60px;z-index:48;}
+.elevation-banner.show{display:flex;}
+.elevation-banner-info{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
+.elevation-banner-info b{font-weight:700;}
+.elevation-release-btn{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;padding:5px 12px;border-radius:14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0;}
+.elevation-release-btn:hover{background:rgba(255,255,255,.28);}
+
+.tabs{background:#fff;border-bottom:1px solid var(--border);padding:0 20px;display:flex;gap:0;overflow-x:auto;position:sticky;top:60px;z-index:49;}
+.tabs.with-elevation{top:104px;}
+.tab{padding:14px 16px;font-size:13px;color:var(--text-2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;background:none;border-left:none;border-right:none;border-top:none;font-family:inherit;font-weight:600;display:flex;align-items:center;gap:6px;}
+.tab.active{color:var(--text);border-bottom-color:#e8392f;}
+.tab:hover:not(.active){color:var(--text);}
+.tab-count{font-size:11px;background:var(--gray-bg);padding:1px 6px;border-radius:10px;font-weight:700;color:var(--text-2);}
+.tab.active .tab-count{background:#fee2e2;color:#dc2626;}
+
+.body{padding:20px;max-width:1280px;margin:0 auto;width:100%;}
+.section{display:none;}
+.section.active{display:block;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px;}
+.stat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;transition:all .15s;}
+.stat.clickable{cursor:pointer;}
+.stat.clickable:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:var(--shadow);}
+.stat-label{font-size:11px;color:var(--text-3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;display:flex;align-items:center;gap:5px;}
+.stat-val{font-size:24px;font-weight:800;color:var(--text);line-height:1.1;}
+.stat-trend{font-size:11px;color:var(--green);margin-top:4px;font-weight:600;}
+.stat-trend.muted{color:var(--text-3);}
+.stat-trend.warn{color:var(--amber);}
+
+.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;}
+.card-title{font-size:13px;color:var(--text-2);font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+
+table.tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
+table.tbl th{text-align:left;font-weight:700;color:var(--text-2);padding:9px 8px;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.3px;background:#fafbfc;}
+table.tbl td{padding:11px 8px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top;}
+table.tbl tbody tr{cursor:pointer;transition:background .1s;}
+table.tbl tbody tr:hover{background:#fafbfc;}
+table.tbl tbody tr:last-child td{border-bottom:none;}
+
+.pill{display:inline-block;font-size:10px;padding:3px 8px;border-radius:11px;font-weight:700;}
+.pill-green{background:var(--green-bg);color:var(--green);}
+.pill-amber{background:var(--amber-bg);color:var(--amber);}
+.pill-red{background:var(--red-bg);color:var(--red);}
+.pill-blue{background:var(--blue-bg);color:var(--blue);}
+.pill-purple{background:var(--purple-bg);color:var(--purple);}
+.pill-gray{background:var(--gray-bg);color:var(--text-2);}
+
+.engagement{display:inline-flex;gap:8px;font-size:11px;color:var(--text-3);}
+.engagement b{color:var(--text);font-weight:700;}
+.ghost-flag{display:inline-block;font-size:9px;background:#fef3c7;color:#92400e;padding:1px 6px;border-radius:8px;margin-left:5px;font-weight:700;}
+
+.search{width:100%;padding:9px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;background:#fff;color:var(--text);font-family:inherit;}
+.search:focus{outline:none;border-color:var(--accent);}
+
+.filter-bar{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.filter-btn{font-size:11px;padding:5px 11px;background:#fff;border:1px solid var(--border);border-radius:14px;cursor:pointer;color:var(--text);font-family:inherit;font-weight:600;}
+.filter-btn.active{background:#e8392f;color:#fff;border-color:#e8392f;}
+
+.chart{height:140px;background:#fafbfc;border-radius:8px;display:flex;align-items:end;padding:10px 8px;gap:3px;border:1px solid var(--border);}
+.chart-bar{flex:1;background:var(--accent);border-radius:2px 2px 0 0;min-height:2px;}
+.chart-bar.green{background:var(--green);}
+
+/* DETAIL PANEL */
+.detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;}
+.detail-overlay.show{display:block;}
+.detail-panel{position:fixed;top:0;right:0;bottom:0;width:440px;max-width:92vw;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.15);z-index:201;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);overflow-y:auto;}
+.detail-panel.show{transform:translateX(0);}
+.detail-hdr{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;background:#fafbfc;}
+.detail-title{font-size:16px;font-weight:800;color:var(--text);line-height:1.3;}
+.detail-sub{font-size:11px;color:var(--text-3);margin-top:3px;font-family:monospace;word-break:break-all;}
+.detail-close{background:none;border:none;cursor:pointer;color:var(--text-3);width:30px;height:30px;border-radius:6px;font-size:18px;display:flex;align-items:center;justify-content:center;font-family:inherit;}
+.detail-close:hover{background:var(--gray-bg);color:var(--text);}
+.detail-body{padding:18px 20px;}
+.detail-section{margin-bottom:18px;}
+.detail-section h4{font-size:10px;font-weight:700;color:var(--text-3);margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase;}
+.detail-row{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;font-size:13px;}
+.detail-row dt{color:var(--text-3);}
+.detail-row dd{color:var(--text);margin:0;font-weight:600;word-break:break-word;}
+
+.engage-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.engage-tile{background:#fafbfc;border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;}
+.engage-tile-val{font-size:18px;font-weight:800;color:var(--text);line-height:1;}
+.engage-tile-label{font-size:10px;color:var(--text-3);margin-top:3px;font-weight:600;}
+
+.actions{display:flex;flex-direction:column;gap:7px;}
+.action-btn{padding:9px 12px;font-size:12.5px;background:#fff;border:1px solid var(--border-strong);border-radius:8px;cursor:pointer;color:var(--text);font-family:inherit;font-weight:600;text-align:left;display:flex;align-items:center;gap:8px;transition:all .1s;}
+.action-btn:hover{background:var(--gray-bg);}
+.action-btn.primary{background:#e8392f;color:#fff;border-color:#e8392f;}
+.action-btn.primary:hover{opacity:.92;background:#e8392f;}
+.action-btn.purple{background:#7c3aed;color:#fff;border-color:#7c3aed;}
+.action-btn.purple:hover{opacity:.92;background:#7c3aed;}
+.action-btn.danger{color:var(--red);border-color:#fecaca;}
+.action-btn.danger:hover{background:#fef2f2;}
+
+.elev-status-box{background:#ede9fe;border:1px solid #c4b5fd;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:#5b21b6;line-height:1.5;}
+.elev-status-box b{display:block;margin-bottom:3px;color:#4c1d95;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.show{display:flex;}
+.modal{background:#fff;border-radius:14px;padding:24px;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.modal-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:8px;}
+.modal-body{font-size:13px;color:var(--text-2);margin-bottom:18px;line-height:1.5;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;}
+.modal-actions button{padding:9px 16px;font-size:13px;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:700;border:1px solid var(--border-strong);background:#fff;color:var(--text);}
+.modal-actions button.primary{background:#e8392f;color:#fff;border-color:#e8392f;}
+.modal-actions button.purple{background:#7c3aed;color:#fff;border-color:#7c3aed;}
+.modal-actions button.danger{background:var(--red);color:#fff;border-color:var(--red);}
+
+.form-field{margin-bottom:12px;}
+.form-field label{display:block;font-size:11px;color:var(--text-3);font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px;}
+.form-field select,.form-field input,.form-field textarea{width:100%;padding:9px 11px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);font-family:inherit;}
+.form-field textarea{min-height:80px;resize:vertical;}
+.form-field select:focus,.form-field input:focus,.form-field textarea:focus{outline:none;border-color:var(--accent);}
+.form-hint{font-size:11px;color:var(--text-3);margin-top:4px;font-style:italic;}
+
+.loading{text-align:center;padding:40px 20px;color:var(--text-3);font-size:13px;}
+.loading::before{content:"";display:inline-block;width:14px;height:14px;border:2px solid var(--border-strong);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:8px;}
+.empty{text-align:center;padding:40px 20px;color:var(--text-3);font-size:13px;}
+
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:#10131a;color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:400;transition:transform .25s;box-shadow:0 8px 24px rgba(0,0,0,.3);max-width:90vw;}
+#toast.show{transform:translateX(-50%) translateY(0);}
+#toast.success{background:var(--green);}
+#toast.error{background:var(--red);}
+
+@media (max-width:760px){
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .body{padding:14px;}
+  .detail-panel{width:100%;}
+  table.tbl{font-size:11.5px;}
+  table.tbl th,table.tbl td{padding:8px 5px;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="star" style="width:2px;height:2px;top:15%;left:20%;animation-duration:2.8s;"></div>
+  <div class="star" style="width:3px;height:3px;top:25%;left:75%;animation-duration:3.5s;animation-delay:.5s;"></div>
+  <div class="star" style="width:2px;height:2px;top:55%;left:15%;animation-duration:2.4s;animation-delay:1s;"></div>
+  <div class="star" style="width:3px;height:3px;top:70%;left:80%;animation-duration:3.1s;animation-delay:.3s;"></div>
+  <div class="meteor m1"></div><div class="meteor m2"></div><div class="meteor m3"></div>
+  <div class="login-box">
+    <div class="login-logo">FZ</div>
+    <div class="login-title">FeeZoapp</div>
+    <div class="login-sub">Admin Console</div>
+    <div class="admin-badge">🔒 SUPERADMIN ONLY</div>
+    <div class="login-error" id="loginError">⚠️ <span id="loginErrorMsg"></span></div>
+    <div class="login-field">
+      <label>Email</label>
+      <div class="field-wrap"><input type="email" id="adminEmail" placeholder="you@example.com" autocomplete="email" oninput="clearLoginError()"></div>
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <div class="field-wrap"><input type="password" id="adminPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAdminLogin()" oninput="clearLoginError()"></div>
+    </div>
+    <button class="btn-login" id="loginBtn" onclick="doAdminLogin()">Sign in →</button>
+    <div style="font-size:11px;color:#8a8f9c;margin-top:18px;line-height:1.5;">This console is for FeeZoapp team only.<br>For customer access, go to <a href="index.html" style="color:#e8392f;">the app</a>.</div>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="adminApp">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">FZ</div>
+      <div><div class="topbar-title">FeeZoapp Admin<small>Internal console</small></div></div>
+    </div>
+    <div class="topbar-right">
+      <span id="hello">Hi</span>
+      <button class="signout-btn" onclick="doSignOut()">Sign out</button>
+    </div>
+  </div>
+
+  <!-- ACTIVE ELEVATION BANNER -->
+  <div class="elevation-banner" id="elevationBanner">
+    <div class="elevation-banner-info">
+      🔓 <span><b>Elevation active:</b> <span id="elevAcademyName">—</span> · expires in <span id="elevExpiresIn">—</span></span>
+    </div>
+    <button class="elevation-release-btn" onclick="releaseActiveElevation()">Release now</button>
+  </div>
+
+  <div class="tabs" id="tabsBar">
+    <button class="tab active" data-tab="overview">📊 Overview</button>
+    <button class="tab" data-tab="signups">✍️ Signups <span class="tab-count" id="cnt-signups">0</span></button>
+    <button class="tab" data-tab="trials">🎁 Trials <span class="tab-count" id="cnt-trials">0</span></button>
+    <button class="tab" data-tab="paying">💰 Paying <span class="tab-count" id="cnt-paying">0</span></button>
+    <button class="tab" data-tab="customers">👥 Customers <span class="tab-count" id="cnt-customers">0</span></button>
+    <button class="tab" data-tab="revenue">💎 Revenue</button>
+    <button class="tab" data-tab="activity">📋 Activity</button>
+  </div>
+
+  <div class="body">
+
+    <div class="section active" id="sec-overview">
+      <div class="stat-grid" id="ovStatRow1"></div>
+      <div class="stat-grid" id="ovStatRow2"></div>
+      <div class="card">
+        <div class="card-title">⚠️ Needs attention today</div>
+        <div id="attentionList"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <div class="section" id="sec-signups">
+      <input type="text" class="search" id="searchSignups" placeholder="Search by email, slug, or academy name..." oninput="renderSignups()">
+      <div class="card">
+        <div class="card-title"><span id="signupsTotal">All signups</span><span style="font-size:11px;color:var(--text-3);font-weight:500;">Click row for details</span></div>
+        <div id="signupsTable"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <div class="section" id="sec-trials">
+      <div class="card">
+        <div class="card-title"><span id="trialsTotal">Active trials</span></div>
+        <div id="trialsTable"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <div class="section" id="sec-paying">
+      <input type="text" class="search" id="searchPaying" placeholder="Search paying customer..." oninput="renderPaying()">
+      <div class="card">
+        <div class="card-title"><span id="payingTotal">Paying customers</span></div>
+        <div id="payingTable"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <div class="section" id="sec-customers">
+      <input type="text" class="search" id="searchCustomers" placeholder="Search any customer..." oninput="renderCustomers()">
+      <div class="filter-bar" id="customerFilters">
+        <button class="filter-btn active" data-filter="all">All <span id="fcnt-all">0</span></button>
+        <button class="filter-btn" data-filter="trial">Trial <span id="fcnt-trial">0</span></button>
+        <button class="filter-btn" data-filter="paying">Paying <span id="fcnt-paying">0</span></button>
+        <button class="filter-btn" data-filter="frozen">Frozen <span id="fcnt-frozen">0</span></button>
+        <button class="filter-btn" data-filter="ghost">Ghost <span id="fcnt-ghost">0</span></button>
+      </div>
+      <div class="card"><div id="customersTable"><div class="loading">Loading...</div></div></div>
+    </div>
+
+    <div class="section" id="sec-revenue">
+      <div class="stat-grid" id="revStatRow"></div>
+      <div class="card">
+        <div class="card-title">Signups · last 30 days</div>
+        <div class="chart" id="signupChart"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Customers by plan</div>
+        <div id="planBreakdown"></div>
+      </div>
+    </div>
+
+    <div class="section" id="sec-activity">
+      <div class="card">
+        <div class="card-title">Recent activity · last 100 events</div>
+        <div id="activityTable"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div class="detail-overlay" id="detailOverlay" onclick="closeDetail()"></div>
+<div class="detail-panel" id="detailPanel">
+  <div class="detail-hdr">
+    <div>
+      <div class="detail-title" id="dpTitle">Customer</div>
+      <div class="detail-sub" id="dpSub"></div>
+    </div>
+    <button class="detail-close" onclick="closeDetail()" aria-label="Close">×</button>
+  </div>
+  <div class="detail-body" id="dpBody"><div class="loading">Loading...</div></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Confirm</div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- SUPABASE INIT -->
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+// EDIT THESE if your Supabase config changes
+const SUPABASE_URL      = 'https://trywgvlewusawvajxfln.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_POd2XvVNwKtVZT0k5_0Yag_pg0vulLD';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: false,
+    storageKey: 'fz_admin_auth'   // SEPARATE from customer app
+  }
+});
+
+window._sb = supabase;
+window._sbSignOut = () => supabase.auth.signOut();
+
+// Auto-login check on page load
+supabase.auth.getSession().then(({ data: { session } }) => {
+  if (session) tryAutoLogin(session);
+  else showLoginScreen();
+});
+</script>
+
+<script>
+// =============================================================
+// STATE
+// =============================================================
+let _allCustomers = [];
+let _customerFilter = 'all';
+let _appConfig = null;
+let _currentDetail = null;       // currently-open customer
+let _activeElevation = null;     // currently-active elevation row
+let _elevationTimer = null;      // countdown ticker
+let _currentUserName = '';
+
+// =============================================================
+// LOGIN
+// =============================================================
+function showLoginScreen() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('adminApp').classList.remove('active');
+}
+function showAdminApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('adminApp').classList.add('active');
+}
+function clearLoginError() { document.getElementById('loginError').classList.remove('show'); }
+function showLoginError(msg) {
+  document.getElementById('loginErrorMsg').innerHTML = msg;
+  document.getElementById('loginError').classList.add('show');
+}
+
+async function doAdminLogin() {
+  const email = (document.getElementById('adminEmail').value || '').trim().toLowerCase();
+  const pw    = document.getElementById('adminPass').value;
+  if (!email || !pw) { showLoginError('Please enter both email and password.'); return; }
+
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Signing in...';
+
+  try {
+    const { data, error } = await window._sb.auth.signInWithPassword({ email, password: pw });
+    if (error || !data?.user) {
+      showLoginError(error?.message || 'Invalid email or password.');
+      btn.disabled = false; btn.innerHTML = 'Sign in →';
+      return;
+    }
+    const { data: prof, error: profErr } = await window._sb
+      .from('app_users').select('role, name, email').eq('id', data.user.id).single();
+    if (profErr || !prof) {
+      await window._sb.auth.signOut();
+      showLoginError('Account not set up. Contact support.');
+      btn.disabled = false; btn.innerHTML = 'Sign in →';
+      return;
+    }
+    if (prof.role !== 'superadmin') {
+      await window._sb.auth.signOut();
+      showLoginError('This account does not have admin access. Use <a href="index.html" style="color:#e8392f;">the customer app</a> instead.');
+      btn.disabled = false; btn.innerHTML = 'Sign in →';
+      return;
+    }
+
+    // Also verify team_members says they're not revoked
+    const { data: tm } = await window._sb
+      .from('team_members').select('revoked_at, access_level').eq('user_id', data.user.id).maybeSingle();
+    if (tm && tm.revoked_at) {
+      await window._sb.auth.signOut();
+      showLoginError('Your team membership has been revoked.');
+      btn.disabled = false; btn.innerHTML = 'Sign in →';
+      return;
+    }
+
+    _currentUserName = prof.name || prof.email;
+    document.getElementById('hello').textContent = 'Hi ' + _currentUserName;
+    showAdminApp();
+    loadDashboard();
+  } catch (e) {
+    showLoginError('Login failed: ' + (e.message || 'unknown error'));
+    btn.disabled = false; btn.innerHTML = 'Sign in →';
+  }
+}
+
+async function tryAutoLogin(session) {
+  try {
+    const { data: prof } = await window._sb
+      .from('app_users').select('role, name, email').eq('id', session.user.id).single();
+    if (prof && prof.role === 'superadmin') {
+      const { data: tm } = await window._sb
+        .from('team_members').select('revoked_at').eq('user_id', session.user.id).maybeSingle();
+      if (tm && tm.revoked_at) {
+        await window._sb.auth.signOut();
+        showLoginScreen();
+        return;
+      }
+      _currentUserName = prof.name || prof.email;
+      document.getElementById('hello').textContent = 'Hi ' + _currentUserName;
+      showAdminApp();
+      loadDashboard();
+    } else {
+      await window._sb.auth.signOut();
+      showLoginScreen();
+    }
+  } catch (e) {
+    showLoginScreen();
+  }
+}
+
+async function doSignOut() {
+  if (_elevationTimer) clearInterval(_elevationTimer);
+  await window._sb.auth.signOut();
+  location.reload();
+}
+
+// =============================================================
+// LOAD ALL DATA
+// =============================================================
+async function loadDashboard() {
+  try {
+    const [stats, customers, cfg] = await Promise.all([
+      window._sb.rpc('admin_overview_stats'),
+      window._sb.rpc('admin_list_customers'),
+      window._sb.from('app_config').select('*').eq('id', 1).single()
+    ]);
+    if (stats.error)     throw new Error('Stats: ' + stats.error.message);
+    if (customers.error) throw new Error('Customers: ' + customers.error.message);
+
+    _allCustomers = customers.data || [];
+    _appConfig = cfg.data || null;
+
+    renderOverview(stats.data);
+    updateTabCounts(stats.data);
+    renderSignups();
+    renderTrials();
+    renderPaying();
+    renderCustomers();
+    renderRevenue(stats.data);
+    loadActivity();
+    loadActiveElevation();
+  } catch (e) {
+    showToast('Failed to load: ' + e.message, 'error');
+    console.error(e);
+  }
+}
+
+function updateTabCounts(s) {
+  document.getElementById('cnt-signups').textContent  = s.total_academies;
+  document.getElementById('cnt-trials').textContent   = s.active_trials;
+  document.getElementById('cnt-paying').textContent   = s.paying;
+  document.getElementById('cnt-customers').textContent = s.total_academies;
+  document.getElementById('fcnt-all').textContent     = _allCustomers.length;
+  document.getElementById('fcnt-trial').textContent   = _allCustomers.filter(c => c.status === 'trial_active').length;
+  document.getElementById('fcnt-paying').textContent  = _allCustomers.filter(c => c.status === 'active').length;
+  document.getElementById('fcnt-frozen').textContent  = _allCustomers.filter(c => ['frozen','trial_expired','plan_expired'].includes(c.status)).length;
+  document.getElementById('fcnt-ghost').textContent   = _allCustomers.filter(c => c.is_ghost).length;
+}
+
+// =============================================================
+// OVERVIEW
+// =============================================================
+function renderOverview(s) {
+  const fmt = n => Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+  const fmtMoney = n => '₹' + fmt(n);
+
+  document.getElementById('ovStatRow1').innerHTML = `
+    <div class="stat clickable" onclick="goTab('customers')">
+      <div class="stat-label">Total academies →</div><div class="stat-val">${s.total_academies}</div>
+      <div class="stat-trend">+${s.signups_month} this month</div>
+    </div>
+    <div class="stat clickable" onclick="goTab('signups')">
+      <div class="stat-label">Signups this week →</div><div class="stat-val">${s.signups_week}</div>
+      <div class="stat-trend muted">Past 7 days</div>
+    </div>
+    <div class="stat clickable" onclick="goTab('trials')">
+      <div class="stat-label">Active trials →</div><div class="stat-val">${s.active_trials}</div>
+      <div class="stat-trend ${s.expiring_3d > 0 ? 'warn' : 'muted'}">${s.expiring_3d} expiring in 3 days</div>
+    </div>
+    <div class="stat clickable" onclick="goTab('paying')">
+      <div class="stat-label">Paying customers →</div><div class="stat-val">${s.paying}</div>
+      <div class="stat-trend ${s.renew_7d > 0 ? 'warn' : 'muted'}">${s.renew_7d} renewing in 7 days</div>
+    </div>`;
+
+  document.getElementById('ovStatRow2').innerHTML = `
+    <div class="stat clickable" onclick="goTab('revenue')">
+      <div class="stat-label">MRR →</div><div class="stat-val">${fmtMoney(s.mrr)}</div>
+      <div class="stat-trend muted">Monthly recurring</div>
+    </div>
+    <div class="stat clickable" onclick="goTab('revenue')">
+      <div class="stat-label">ARR →</div><div class="stat-val">${fmtMoney(s.arr)}</div>
+      <div class="stat-trend muted">Annual run rate</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Conversion</div><div class="stat-val">${s.conversion_pct}%</div>
+      <div class="stat-trend muted">${s.trials_converted_90d} of ${s.trials_total_90d} signups · 90d</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Frozen accounts</div><div class="stat-val">${s.frozen}</div>
+      <div class="stat-trend muted">Expired or manual</div>
+    </div>`;
+
+  const attention = [];
+  _allCustomers.forEach(c => {
+    if (c.status === 'trial_active' && c.days_left !== null && c.days_left <= 2) {
+      attention.push({ c, issue: `Trial ends in ${c.days_left}d`, urgent: c.days_left <= 1 });
+    } else if (c.status === 'trial_expired') {
+      attention.push({ c, issue: `Trial expired ${Math.abs(c.days_left || 0)}d ago`, urgent: true });
+    } else if (c.status === 'active' && c.days_left !== null && c.days_left <= 7) {
+      attention.push({ c, issue: `${c.plan} renews in ${c.days_left}d`, urgent: c.days_left <= 3 });
+    }
+  });
+  attention.sort((a,b)=>(a.c.days_left||0) - (b.c.days_left||0));
+
+  if (attention.length === 0) {
+    document.getElementById('attentionList').innerHTML = `<div class="empty">All good — no urgent items today ✓</div>`;
+  } else {
+    document.getElementById('attentionList').innerHTML = `
+      <table class="tbl">
+        <thead><tr><th>Academy</th><th>Issue</th><th>Engagement</th></tr></thead>
+        <tbody>
+          ${attention.slice(0,8).map(a => `
+            <tr onclick="openDetail('${a.c.id}')">
+              <td><b>${escapeHTML(a.c.name)}</b><br><span style="font-size:10px;color:var(--text-3);font-family:monospace;">${a.c.slug}</span></td>
+              <td><span class="pill ${a.urgent ? 'pill-red' : 'pill-amber'}">${a.issue}</span></td>
+              <td><span class="engagement"><b>${a.c.student_count || 0}</b> students · ${formatLastLogin(a.c.last_login_at)}</span></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>`;
+  }
+}
+
+// =============================================================
+// SIGNUPS
+// =============================================================
+function renderSignups() {
+  const q = (document.getElementById('searchSignups').value || '').toLowerCase().trim();
+  const filtered = _allCustomers.filter(c =>
+    !q || (c.name||'').toLowerCase().includes(q)
+       || (c.slug||'').toLowerCase().includes(q)
+       || (c.admin_email||'').toLowerCase().includes(q)
+  );
+  document.getElementById('signupsTotal').textContent = `${filtered.length} signups`;
+  if (filtered.length === 0) { document.getElementById('signupsTable').innerHTML = '<div class="empty">No signups match.</div>'; return; }
+  document.getElementById('signupsTable').innerHTML = `
+    <table class="tbl">
+      <thead><tr><th>Date</th><th>Academy</th><th>Admin</th><th>Status</th><th>Engagement</th></tr></thead>
+      <tbody>${filtered.map(c => `
+        <tr onclick="openDetail('${c.id}')">
+          <td>${formatDate(c.signup_at)}</td>
+          <td><b>${escapeHTML(c.name)}</b><br><span style="font-size:10px;color:var(--text-3);font-family:monospace;">${c.slug}${c.is_ghost ? '<span class="ghost-flag">GHOST</span>' : ''}</span></td>
+          <td style="font-size:11px;color:var(--text-2);">${escapeHTML(c.admin_email || '—')}</td>
+          <td>${statusPill(c)}</td>
+          <td><span class="engagement"><b>${c.student_count || 0}</b> stu · ${formatLastLogin(c.last_login_at)}</span></td>
+        </tr>`).join('')}</tbody></table>`;
+}
+
+// =============================================================
+// TRIALS
+// =============================================================
+function renderTrials() {
+  const trials = _allCustomers.filter(c => ['trial_active','trial_expired'].includes(c.status));
+  document.getElementById('trialsTotal').textContent = `${trials.length} trials`;
+  if (trials.length === 0) { document.getElementById('trialsTable').innerHTML = '<div class="empty">No active trials.</div>'; return; }
+  trials.sort((a,b)=>(a.days_left||0)-(b.days_left||0));
+  document.getElementById('trialsTable').innerHTML = `
+    <table class="tbl">
+      <thead><tr><th>Academy</th><th>Ends</th><th>Days</th><th>Last login</th><th>Engagement</th></tr></thead>
+      <tbody>${trials.map(c => `
+        <tr onclick="openDetail('${c.id}')">
+          <td><b>${escapeHTML(c.name)}</b><br><span style="font-size:10px;color:var(--text-3);font-family:monospace;">${c.slug}${c.is_ghost ? '<span class="ghost-flag">GHOST</span>' : ''}</span></td>
+          <td style="font-size:11px;">${formatDateTime(c.trial_ends_at)}</td>
+          <td>${daysPill(c.days_left, c.status)}</td>
+          <td style="font-size:11px;">${formatLastLogin(c.last_login_at)}</td>
+          <td><span class="engagement"><b>${c.student_count || 0}</b> stu · <b>${c.attendance_count || 0}</b> att</span></td>
+        </tr>`).join('')}</tbody></table>`;
+}
+
+// =============================================================
+// PAYING
+// =============================================================
+function renderPaying() {
+  const q = (document.getElementById('searchPaying').value || '').toLowerCase().trim();
+  const paying = _allCustomers.filter(c => ['active','plan_expired'].includes(c.status))
+    .filter(c => !q || (c.name||'').toLowerCase().includes(q) || (c.slug||'').toLowerCase().includes(q));
+  document.getElementById('payingTotal').textContent = `${paying.length} customers`;
+  if (paying.length === 0) { document.getElementById('payingTable').innerHTML = '<div class="empty">No paying customers yet.</div>'; return; }
+  paying.sort((a,b)=>(a.days_left || 9999)-(b.days_left || 9999));
+  document.getElementById('payingTable').innerHTML = `
+    <table class="tbl">
+      <thead><tr><th>Academy</th><th>Plan</th><th>Renews</th><th>Last login</th><th>Engagement</th></tr></thead>
+      <tbody>${paying.map(c => `
+        <tr onclick="openDetail('${c.id}')">
+          <td><b>${escapeHTML(c.name)}</b><br><span style="font-size:10px;color:var(--text-3);font-family:monospace;">${c.slug}</span></td>
+          <td><span class="pill pill-blue">${escapeHTML(c.plan)}</span></td>
+          <td style="font-size:11px;">${formatDateTime(c.plan_ends_at)} ${c.days_left !== null && c.days_left <= 7 ? '⚠️' : ''}</td>
+          <td style="font-size:11px;">${formatLastLogin(c.last_login_at)}</td>
+          <td><span class="engagement"><b>${c.student_count || 0}</b> stu · <b>${c.attendance_count || 0}</b> att</span></td>
+        </tr>`).join('')}</tbody></table>`;
+}
+
+// =============================================================
+// ALL CUSTOMERS
+// =============================================================
+function renderCustomers() {
+  const q = (document.getElementById('searchCustomers').value || '').toLowerCase().trim();
+  let list = _allCustomers.slice();
+  if (_customerFilter === 'trial') list = list.filter(c => c.status === 'trial_active');
+  else if (_customerFilter === 'paying') list = list.filter(c => c.status === 'active');
+  else if (_customerFilter === 'frozen') list = list.filter(c => ['frozen','trial_expired','plan_expired'].includes(c.status));
+  else if (_customerFilter === 'ghost') list = list.filter(c => c.is_ghost);
+
+  list = list.filter(c => !q || (c.name||'').toLowerCase().includes(q) || (c.slug||'').toLowerCase().includes(q) || (c.admin_email||'').toLowerCase().includes(q));
+
+  if (list.length === 0) { document.getElementById('customersTable').innerHTML = '<div class="empty">No customers match.</div>'; return; }
+
+  document.getElementById('customersTable').innerHTML = `
+    <table class="tbl">
+      <thead><tr><th>Academy</th><th>Status</th><th>Joined</th><th>Last login</th><th>Engagement</th></tr></thead>
+      <tbody>${list.map(c => `
+        <tr onclick="openDetail('${c.id}')">
+          <td><b>${escapeHTML(c.name)}</b><br><span style="font-size:10px;color:var(--text-3);font-family:monospace;">${c.slug}${c.is_ghost ? '<span class="ghost-flag">GHOST</span>' : ''}</span></td>
+          <td>${statusPill(c)}</td>
+          <td style="font-size:11px;">${formatDate(c.signup_at)}</td>
+          <td style="font-size:11px;">${formatLastLogin(c.last_login_at)}</td>
+          <td><span class="engagement"><b>${c.student_count || 0}</b> stu</span></td>
+        </tr>`).join('')}</tbody></table>`;
+}
+
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('filter-btn')) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    _customerFilter = e.target.getAttribute('data-filter');
+    renderCustomers();
+  }
+});
+
+// =============================================================
+// REVENUE
+// =============================================================
+function renderRevenue(s) {
+  const fmtMoney = n => '₹' + Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+  document.getElementById('revStatRow').innerHTML = `
+    <div class="stat"><div class="stat-label">MRR</div><div class="stat-val">${fmtMoney(s.mrr)}</div><div class="stat-trend muted">Monthly recurring</div></div>
+    <div class="stat"><div class="stat-label">ARR</div><div class="stat-val">${fmtMoney(s.arr)}</div><div class="stat-trend muted">Annual run rate</div></div>
+    <div class="stat"><div class="stat-label">Paying</div><div class="stat-val">${s.paying}</div><div class="stat-trend muted">${s.frozen} frozen</div></div>
+    <div class="stat"><div class="stat-label">Conversion</div><div class="stat-val">${s.conversion_pct}%</div><div class="stat-trend muted">90-day</div></div>`;
+  if (s.signups_30d && s.signups_30d.length) {
+    const max = Math.max(1, ...s.signups_30d.map(d => d.count));
+    document.getElementById('signupChart').innerHTML = s.signups_30d.map(d => {
+      const h = Math.round((d.count / max) * 100);
+      return `<div class="chart-bar green" style="height:${h}%" title="${d.date}: ${d.count}"></div>`;
+    }).join('');
+  }
+  const byPlan = { basic:0, pro:0, premium:0 };
+  _allCustomers.forEach(c => { if (c.status === 'active') byPlan[c.plan] = (byPlan[c.plan]||0)+1; });
+  document.getElementById('planBreakdown').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center;">
+      <div><div style="font-size:22px;font-weight:800;">${byPlan.basic}</div><div style="font-size:11px;color:var(--text-3);font-weight:600;">BASIC</div></div>
+      <div><div style="font-size:22px;font-weight:800;">${byPlan.pro}</div><div style="font-size:11px;color:var(--text-3);font-weight:600;">PRO</div></div>
+      <div><div style="font-size:22px;font-weight:800;">${byPlan.premium}</div><div style="font-size:11px;color:var(--text-3);font-weight:600;">PREMIUM</div></div>
+    </div>`;
+}
+
+// =============================================================
+// ACTIVITY
+// =============================================================
+async function loadActivity() {
+  try {
+    const { data, error } = await window._sb.rpc('admin_recent_activity', { p_limit: 100 });
+    if (error) throw error;
+    if (!data || data.length === 0) { document.getElementById('activityTable').innerHTML = '<div class="empty">No recent activity.</div>'; return; }
+    document.getElementById('activityTable').innerHTML = `
+      <table class="tbl">
+        <thead><tr><th>When</th><th>Academy</th><th>Who</th><th>Event</th><th>Detail</th></tr></thead>
+        <tbody>${data.map(a => `
+          <tr>
+            <td style="font-size:11px;white-space:nowrap;">${formatLastLogin(a.created_at)}</td>
+            <td style="font-size:11px;"><b>${escapeHTML(a.academy_name || '—')}</b><br><span style="color:var(--text-3);font-family:monospace;">${a.slug || ''}</span></td>
+            <td style="font-size:11px;color:var(--text-2);">${escapeHTML(a.user_id || '—')}</td>
+            <td><span class="pill pill-gray">${escapeHTML(a.action || '')}</span></td>
+            <td style="font-size:11px;color:var(--text-2);">${escapeHTML((a.detail||'').substring(0, 100))}</td>
+          </tr>`).join('')}</tbody></table>`;
+  } catch (e) {
+    document.getElementById('activityTable').innerHTML = '<div class="empty">Failed to load activity.</div>';
+  }
+}
+
+// =============================================================
+// ACTIVE ELEVATION (the break-glass)
+// =============================================================
+async function loadActiveElevation() {
+  try {
+    const { data: u } = await window._sb.auth.getUser();
+    if (!u?.user) return;
+    const { data, error } = await window._sb
+      .from('support_elevations')
+      .select('id, academy_id, reason, granted_at, expires_at, access_level')
+      .eq('superadmin_uid', u.user.id)
+      .is('released_at', null)
+      .gt('expires_at', new Date().toISOString())
+      .order('granted_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (error) { console.warn(error); return; }
+
+    if (data) {
+      _activeElevation = data;
+      // Look up academy name
+      const acad = _allCustomers.find(c => c.id === data.academy_id);
+      const acadName = acad ? acad.name : data.academy_id;
+      document.getElementById('elevAcademyName').textContent = acadName;
+      document.getElementById('elevationBanner').classList.add('show');
+      document.getElementById('tabsBar').classList.add('with-elevation');
+      startElevationCountdown();
+    } else {
+      _activeElevation = null;
+      document.getElementById('elevationBanner').classList.remove('show');
+      document.getElementById('tabsBar').classList.remove('with-elevation');
+      if (_elevationTimer) { clearInterval(_elevationTimer); _elevationTimer = null; }
+    }
+  } catch (e) {
+    console.warn('loadActiveElevation', e);
+  }
+}
+
+function startElevationCountdown() {
+  if (_elevationTimer) clearInterval(_elevationTimer);
+  const tick = () => {
+    if (!_activeElevation) return;
+    const remaining = new Date(_activeElevation.expires_at).getTime() - Date.now();
+    if (remaining <= 0) {
+      document.getElementById('elevExpiresIn').textContent = 'expired';
+      // Auto-refresh after expiry
+      setTimeout(() => loadActiveElevation(), 1000);
+      clearInterval(_elevationTimer);
+      return;
+    }
+    const m = Math.floor(remaining / 60000);
+    const s = Math.floor((remaining % 60000) / 1000);
+    document.getElementById('elevExpiresIn').textContent = m + 'm ' + (s < 10 ? '0'+s : s) + 's';
+  };
+  tick();
+  _elevationTimer = setInterval(tick, 1000);
+}
+
+async function releaseActiveElevation() {
+  if (!_activeElevation) return;
+  showModal({
+    title: 'Release elevation?',
+    body: 'End your support access early. You can request a new one later.',
+    actions: [
+      { label: 'Cancel', kind: '', onClick: closeModal },
+      { label: 'Release', kind: 'primary', onClick: async () => {
+        closeModal();
+        await doReleaseElevation(_activeElevation.id, 'Released by user');
+      }}
+    ]
+  });
+}
+
+async function doReleaseElevation(elevId, reason) {
+  try {
+    showToast('Releasing...', '');
+    const { data, error } = await window._sb.functions.invoke('release-elevation', {
+      body: { elevation_id: elevId, reason }
+    });
+    if (error) throw new Error(error.message);
+    if (data?.error) throw new Error(data.error);
+    showToast('✓ Elevation released', 'success');
+    await loadActiveElevation();
+    if (_currentDetail) openDetail(_currentDetail.id);  // refresh panel
+  } catch (e) {
+    showToast('Failed: ' + e.message, 'error');
+  }
+}
+
+// =============================================================
+// DETAIL PANEL
+// =============================================================
+async function openDetail(academyId) {
+  document.getElementById('detailOverlay').classList.add('show');
+  document.getElementById('detailPanel').classList.add('show');
+  document.getElementById('dpBody').innerHTML = '<div class="loading">Loading...</div>';
+  try {
+    const { data, error } = await window._sb.rpc('admin_customer_detail', { p_academy_id: academyId });
+    if (error) throw error;
+    if (!data) throw new Error('Customer not found');
+    _currentDetail = data;
+    renderDetail(data);
+  } catch (e) {
+    document.getElementById('dpBody').innerHTML = '<div class="empty">Failed to load: ' + escapeHTML(e.message) + '</div>';
+  }
+}
+
+function closeDetail() {
+  document.getElementById('detailOverlay').classList.remove('show');
+  document.getElementById('detailPanel').classList.remove('show');
+  _currentDetail = null;
+}
+
+function renderDetail(c) {
+  document.getElementById('dpTitle').textContent = c.name || '—';
+  document.getElementById('dpSub').textContent = (c.slug || '') + ' · ' + (c.admin_email || '');
+
+  const isFrozen = ['frozen','trial_expired','plan_expired'].includes(c.status);
+  const isTrial  = c.status === 'trial_active';
+  const isPaying = c.status === 'active';
+  const elevActiveOnThis = _activeElevation && _activeElevation.academy_id === c.id;
+
+  let elevBox = '';
+  if (elevActiveOnThis) {
+    elevBox = `
+      <div class="elev-status-box">
+        <b>🔓 You have active elevation on this academy</b>
+        Access level: ${_activeElevation.access_level}<br>
+        Reason: ${escapeHTML(_activeElevation.reason)}<br>
+        <button class="action-btn" style="margin-top:6px;width:auto;padding:5px 10px;font-size:11px;" onclick="releaseActiveElevation()">Release now</button>
+      </div>`;
+  }
+
+  document.getElementById('dpBody').innerHTML = `
+    ${elevBox}
+
+    <div class="detail-section">
+      <h4>STATUS</h4>
+      <dl class="detail-row">
+        <dt>Plan</dt><dd>${statusPill(c)}</dd>
+        ${c.trial_ends_at ? `<dt>Trial ends</dt><dd>${formatDateTime(c.trial_ends_at)}</dd>` : ''}
+        ${c.plan_ends_at ? `<dt>Plan ends</dt><dd>${formatDateTime(c.plan_ends_at)}</dd>` : ''}
+        <dt>Signed up</dt><dd>${formatDateTime(c.signup_at)}</dd>
+        ${c.admin_name ? `<dt>Admin</dt><dd>${escapeHTML(c.admin_name)}</dd>` : ''}
+        ${c.admin_email ? `<dt>Email</dt><dd>${escapeHTML(c.admin_email)}</dd>` : ''}
+        ${c.phone ? `<dt>Phone</dt><dd>${escapeHTML(c.phone)}</dd>` : ''}
+        ${c.signup_source ? `<dt>Source</dt><dd>${escapeHTML(c.signup_source)}</dd>` : ''}
+      </dl>
+    </div>
+
+    <div class="detail-section">
+      <h4>ENGAGEMENT</h4>
+      <div class="engage-grid">
+        <div class="engage-tile"><div class="engage-tile-val">${c.student_count || 0}</div><div class="engage-tile-label">STUDENTS</div></div>
+        <div class="engage-tile"><div class="engage-tile-val">${c.attendance_count || 0}</div><div class="engage-tile-label">ATTENDANCE</div></div>
+        <div class="engage-tile"><div class="engage-tile-val">${c.fees_count || 0}</div><div class="engage-tile-label">FEE ENTRIES</div></div>
+        <div class="engage-tile"><div class="engage-tile-val">${c.staff_count || 0}</div><div class="engage-tile-label">STAFF</div></div>
+        <div class="engage-tile"><div class="engage-tile-val">${c.login_count || 0}</div><div class="engage-tile-label">LOGINS</div></div>
+        <div class="engage-tile"><div class="engage-tile-val" style="font-size:13px;">${formatLastLogin(c.last_login_at)}</div><div class="engage-tile-label">LAST LOGIN</div></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h4>SUBSCRIPTION ACTIONS</h4>
+      <div class="actions">
+        <button class="action-btn primary" onclick="actionWhatsApp()">💬 Open WhatsApp with pre-filled message</button>
+        <button class="action-btn" onclick="actionEmail()">✉️ Open email with pre-filled message</button>
+        ${(isTrial || isFrozen) ? `<button class="action-btn" onclick="openExtendModal()">⏱️ Extend trial</button>` : ''}
+        <button class="action-btn" onclick="openChangePlanModal()">💎 Change subscription plan</button>
+        ${isFrozen ? `<button class="action-btn primary" onclick="openChangePlanModal()">🚀 Unfreeze + activate</button>` : ''}
+        ${(isTrial || isPaying) ? `<button class="action-btn danger" onclick="confirmFreeze()">🔒 Freeze account</button>` : ''}
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h4>🔓 SUPPORT ELEVATION (access customer's PII)</h4>
+      ${elevActiveOnThis
+        ? `<div style="font-size:12px;color:var(--text-2);">You currently have access. Use it via SQL or the customer login.</div>`
+        : `<div style="font-size:11px;color:var(--text-3);margin-bottom:8px;line-height:1.5;">By default you can only see metadata. To view/edit student data, fees, or attendance, request elevation with a reason. The customer will be notified.</div>
+           <button class="action-btn purple" onclick="openElevationModal()">🔓 Request elevation access</button>`}
+    </div>
+
+    <div class="detail-section">
+      <h4>QUICK LINKS</h4>
+      <div class="actions">
+        <button class="action-btn" onclick="window.open('index.html?a=${encodeURIComponent(c.slug)}','_blank')">🌐 Open their login page</button>
+      </div>
+    </div>`;
+}
+
+// =============================================================
+// ACTION HANDLERS
+// =============================================================
+function actionWhatsApp() {
+  const c = _currentDetail;
+  if (!c) return;
+  if (!c.phone) { showToast('No phone number on file', 'error'); return; }
+  const msg = buildAdminMsg(c);
+  const num = c.phone.replace(/[^0-9+]/g,'').replace(/^\+/,'');
+  window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+function actionEmail() {
+  const c = _currentDetail;
+  if (!c) return;
+  if (!c.admin_email) { showToast('No email on file', 'error'); return; }
+  const subject = `Your ${_appConfig?.business_name || 'FeeZoapp'} account — ${c.name}`;
+  const body = buildAdminMsg(c);
+  window.location.href = `mailto:${c.admin_email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+function buildAdminMsg(c) {
+  const biz = _appConfig?.business_name || 'FeeZoapp';
+  let ctx = '';
+  if (c.status === 'trial_active') ctx = `Your free trial for "${c.name}" ends in ${c.days_left} day(s). `;
+  else if (c.status === 'trial_expired') ctx = `Your trial for "${c.name}" has ended. Your data is safe. `;
+  else if (c.status === 'active' && c.days_left !== null && c.days_left <= 7) ctx = `Your ${c.plan} plan for "${c.name}" renews in ${c.days_left} day(s). `;
+  else if (c.status === 'plan_expired') ctx = `Your ${c.plan} plan for "${c.name}" has expired. `;
+  else ctx = `Following up on "${c.name}". `;
+  return `Hi ${c.admin_name || 'there'},\n\n${ctx}\n\nLet us know if you'd like to subscribe, upgrade, or have any questions.\n\nThanks,\n${biz}`;
+}
+
+function openExtendModal() {
+  const c = _currentDetail;
+  if (!c) return;
+  showModal({
+    title: 'Extend trial',
+    body: `
+      Extend trial for <b>${escapeHTML(c.name)}</b>?
+      <div class="form-field" style="margin-top:14px;">
+        <label>Add how many days?</label>
+        <select id="extDays"><option value="3">3 days</option><option value="7" selected>7 days</option><option value="14">14 days</option><option value="30">30 days</option></select>
+      </div>
+      <div class="form-hint">${c.trial_ends_at && new Date(c.trial_ends_at) > new Date() ? 'Current expiry: ' + formatDateTime(c.trial_ends_at) : 'Trial currently expired — new period starts now'}</div>`,
+    actions: [
+      { label: 'Cancel', kind: '', onClick: closeModal },
+      { label: 'Extend', kind: 'primary', onClick: async () => {
+        const days = parseInt(document.getElementById('extDays').value, 10);
+        closeModal();
+        await doAction('extend_trial', { days });
+      }}
+    ]
+  });
+}
+
+function openChangePlanModal() {
+  const c = _currentDetail;
+  if (!c) return;
+  const isFrozen = ['frozen','trial_expired','plan_expired'].includes(c.status);
+  showModal({
+    title: 'Change subscription plan',
+    body: `
+      Set plan for <b>${escapeHTML(c.name)}</b>:
+      <div class="form-field" style="margin-top:14px;">
+        <label>Plan</label>
+        <select id="cpPlan"><option value="basic">Basic</option><option value="pro" selected>Pro</option><option value="premium">Premium</option></select>
+      </div>
+      <div class="form-field">
+        <label>Billing</label>
+        <select id="cpBilling"><option value="monthly" selected>Monthly</option><option value="annual">Annual</option></select>
+      </div>
+      <div class="form-hint">This will activate the plan starting NOW with a new expiry date.</div>`,
+    actions: [
+      { label: 'Cancel', kind: '', onClick: closeModal },
+      { label: 'Activate', kind: 'primary', onClick: async () => {
+        const plan = document.getElementById('cpPlan').value;
+        const billing = document.getElementById('cpBilling').value;
+        closeModal();
+        await doAction(isFrozen ? 'unfreeze' : 'change_plan', { plan, billing });
+      }}
+    ]
+  });
+}
+
+function confirmFreeze() {
+  const c = _currentDetail;
+  if (!c) return;
+  showModal({
+    title: 'Freeze account?',
+    body: `Are you sure you want to freeze <b>${escapeHTML(c.name)}</b>?<br><br>They'll be locked out until reactivated. Their data is preserved.`,
+    actions: [
+      { label: 'Cancel', kind: '', onClick: closeModal },
+      { label: 'Freeze', kind: 'danger', onClick: async () => { closeModal(); await doAction('freeze_account', {}); }}
+    ]
+  });
+}
+
+function openElevationModal() {
+  const c = _currentDetail;
+  if (!c) return;
+  showModal({
+    title: '🔓 Request elevation access',
+    body: `
+      Request temporary access to <b>${escapeHTML(c.name)}</b>'s data.
+      <div class="form-field" style="margin-top:14px;">
+        <label>Reason (required) — will be visible to the customer</label>
+        <textarea id="elevReason" placeholder="e.g. Customer called about a deleted student record — restoring it" maxlength="500"></textarea>
+      </div>
+      <div class="form-field">
+        <label>Duration</label>
+        <select id="elevMinutes"><option value="15">15 minutes</option><option value="30" selected>30 minutes</option><option value="60">1 hour</option><option value="120">2 hours</option><option value="240">4 hours (max)</option></select>
+      </div>
+      <div class="form-field">
+        <label>Access level</label>
+        <select id="elevAccess"><option value="read_only">Read only (safer)</option><option value="read_write" selected>Read + write</option></select>
+      </div>
+      <div class="form-hint">An audit log will be created. The customer will be notified by email.</div>`,
+    actions: [
+      { label: 'Cancel', kind: '', onClick: closeModal },
+      { label: 'Request access', kind: 'purple', onClick: async () => {
+        const reason  = document.getElementById('elevReason').value.trim();
+        const minutes = parseInt(document.getElementById('elevMinutes').value, 10);
+        const access  = document.getElementById('elevAccess').value;
+        if (reason.length < 10) { showToast('Reason must be at least 10 characters', 'error'); return; }
+        closeModal();
+        await doRequestElevation(c.id, reason, minutes, access);
+      }}
+    ]
+  });
+}
+
+async function doRequestElevation(academyId, reason, minutes, access_level) {
+  try {
+    showToast('Requesting...', '');
+    const { data, error } = await window._sb.functions.invoke('request-elevation', {
+      body: { academy_id: academyId, reason, minutes, access_level }
+    });
+    if (error) throw new Error(error.message);
+    if (data?.error) throw new Error(data.error);
+    showToast('✓ Elevation granted for ' + minutes + ' minutes', 'success');
+    await loadActiveElevation();
+    if (_currentDetail) openDetail(_currentDetail.id);
+  } catch (e) {
+    showToast('Failed: ' + e.message, 'error');
+  }
+}
+
+async function doAction(action, params) {
+  const c = _currentDetail;
+  if (!c) return;
+  try {
+    showToast('Working...', '');
+    const { data, error } = await window._sb.functions.invoke('admin-action', {
+      body: { action, academy_id: c.id, ...params }
+    });
+    if (error) throw new Error(error.message || 'Action failed');
+    if (data?.error) throw new Error(data.error);
+    showToast('✓ Done', 'success');
+    await loadDashboard();
+    openDetail(c.id);
+  } catch (e) {
+    showToast('Failed: ' + e.message, 'error');
+  }
+}
+
+// =============================================================
+// MODAL
+// =============================================================
+function showModal(opts) {
+  document.getElementById('modalTitle').textContent = opts.title;
+  document.getElementById('modalBody').innerHTML = opts.body;
+  const actEl = document.getElementById('modalActions');
+  actEl.innerHTML = '';
+  opts.actions.forEach(a => {
+    const btn = document.createElement('button');
+    btn.textContent = a.label;
+    if (a.kind) btn.classList.add(a.kind);
+    btn.onclick = a.onClick;
+    actEl.appendChild(btn);
+  });
+  document.getElementById('modalOverlay').classList.add('show');
+}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
+
+// =============================================================
+// TABS
+// =============================================================
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', e => goTab(t.getAttribute('data-tab'))));
+function goTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.getAttribute('data-tab') === name));
+  document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 'sec-' + name));
+}
+
+// =============================================================
+// TOAST + HELPERS
+// =============================================================
+function showToast(msg, kind) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = '';
+  if (kind) t.classList.add(kind);
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function escapeHTML(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function formatDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('en-IN', { day:'numeric', month:'short' });
+}
+function formatDateTime(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'2-digit' }) + ' ' +
+         d.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+}
+function formatLastLogin(iso) {
+  if (!iso) return 'never';
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff/60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m/60);
+  if (h < 24) return h + 'h ago';
+  const days = Math.floor(h/24);
+  if (days < 30) return days + 'd ago';
+  return formatDate(iso);
+}
+function statusPill(c) {
+  switch (c.status) {
+    case 'trial_active':
+      if (c.days_left !== null && c.days_left <= 1) return `<span class="pill pill-red">Trial · ${c.days_left}d</span>`;
+      if (c.days_left !== null && c.days_left <= 3) return `<span class="pill pill-amber">Trial · ${c.days_left}d</span>`;
+      return `<span class="pill pill-green">Trial · ${c.days_left}d</span>`;
+    case 'trial_expired': return `<span class="pill pill-red">Trial expired</span>`;
+    case 'active':
+      const label = c.plan.charAt(0).toUpperCase() + c.plan.slice(1);
+      if (c.days_left !== null && c.days_left <= 7) return `<span class="pill pill-amber">${label} · ${c.days_left}d left</span>`;
+      return `<span class="pill pill-blue">${label}</span>`;
+    case 'plan_expired': return `<span class="pill pill-red">${(c.plan||'').charAt(0).toUpperCase() + (c.plan||'').slice(1)} expired</span>`;
+    case 'frozen': return `<span class="pill pill-gray">Frozen</span>`;
+    default: return `<span class="pill pill-gray">${c.status || '—'}</span>`;
+  }
+}
+function daysPill(days, status) {
+  if (days === null || days === undefined) return '<span class="pill pill-gray">—</span>';
+  if (status === 'trial_expired') return `<span class="pill pill-red">Expired</span>`;
+  if (days <= 1) return `<span class="pill pill-red">${days}d</span>`;
+  if (days <= 3) return `<span class="pill pill-amber">${days}d</span>`;
+  return `<span class="pill pill-green">${days}d</span>`;
+}
+
+// Expose for onclick handlers
+window.doAdminLogin = doAdminLogin;
+window.clearLoginError = clearLoginError;
+window.doSignOut = doSignOut;
+window.goTab = goTab;
+window.openDetail = openDetail;
+window.closeDetail = closeDetail;
+window.renderSignups = renderSignups;
+window.renderPaying = renderPaying;
+window.renderCustomers = renderCustomers;
+window.actionWhatsApp = actionWhatsApp;
+window.actionEmail = actionEmail;
+window.openExtendModal = openExtendModal;
+window.openChangePlanModal = openChangePlanModal;
+window.confirmFreeze = confirmFreeze;
+window.openElevationModal = openElevationModal;
+window.releaseActiveElevation = releaseActiveElevation;
+window.closeModal = closeModal;
+</script>
+
+</body>
+</html>
