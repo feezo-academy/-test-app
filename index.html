@@ -28,8 +28,8 @@
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
   // ── YOUR SUPABASE CONFIG (anon key is public — RLS protects the data) ──
-  const SUPABASE_URL = 'https://bwrvhrxfacoiheetistl.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_3FY3aWZ4mScvAsThTGOzlA_PQNzOWeB';
+  const SUPABASE_URL = 'https://trywgvlewusawvajxfln.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_POd2XvVNwKtVZT0k5_0Yag_pg0vulLD';
   
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -13901,8 +13901,13 @@ function initNotifSystem() {
     document.getElementById('fzFrozenStat').style.display = stat ? 'block' : 'none';
 
     document.getElementById('fzFrozenScreen').classList.add('show');
+    // Also disable pointer events on the app underneath so no clicks slip through
+    document.body.style.overflow = 'hidden';
   }
-  function fzHideFrozen() { document.getElementById('fzFrozenScreen').classList.remove('show'); }
+  function fzHideFrozen() {
+    document.getElementById('fzFrozenScreen').classList.remove('show');
+    document.body.style.overflow = '';
+  }
 
   function fzContactSupport() {
     const cfg = _fzAppConfig || {};
@@ -14052,9 +14057,14 @@ function initNotifSystem() {
   // Once the existing app finishes login + loadAllData, kick in
   fzWaitForApp().then(() => {
     fzLoadStatus();
-    // Re-check every 60s so the banner updates as time passes
+    // Check more frequently so freeze from admin takes effect quickly (15s)
     if (_fzBannerCheckInterval) clearInterval(_fzBannerCheckInterval);
-    _fzBannerCheckInterval = setInterval(fzLoadStatus, 60000);
+    _fzBannerCheckInterval = setInterval(fzLoadStatus, 15000);
+    // Also re-check when the tab regains focus (user comes back to the app)
+    window.addEventListener('focus', fzLoadStatus);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') fzLoadStatus();
+    });
   });
 
   // Expose so frozen screen + UI can trigger
