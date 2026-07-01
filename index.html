@@ -13496,75 +13496,152 @@ function initNotifSystem() {
   display:none;
   position:fixed;
   inset:0;
-  background:linear-gradient(180deg,#0f1f3d 0%,#0a1628 100%);
+  background:linear-gradient(135deg,#0f1f3d 0%,#1a1040 50%,#0a1628 100%);
   z-index:9998;
   align-items:center;
   justify-content:center;
-  padding:24px;
+  padding:20px;
   overflow-y:auto;
   font-family:'Poppins','Segoe UI',system-ui,sans-serif;
 }
 #fzFrozenScreen.show{display:flex;}
-.fz-frozen-box{
+
+/* Animated stars background */
+.fz-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.fz-star-dot{position:absolute;background:#fff;border-radius:50%;animation:fzTwinkle ease-in-out infinite;}
+@keyframes fzTwinkle{0%,100%{opacity:.1;transform:scale(.6);}50%{opacity:.8;transform:scale(1);}}
+
+.fz-frozen-wrap{
+  position:relative;z-index:2;
+  width:100%;max-width:520px;
+  display:flex;flex-direction:column;align-items:center;gap:0;
+}
+
+/* Top badge */
+.fz-frozen-badge{
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.2);
+  color:#fff;
+  font-size:11px;font-weight:700;letter-spacing:1px;
+  padding:6px 16px;border-radius:20px;
+  margin-bottom:20px;text-transform:uppercase;
+  backdrop-filter:blur(10px);
+}
+
+/* Main card */
+.fz-frozen-card{
   background:#fff;
-  border-radius:22px;
-  padding:36px 30px;
-  max-width:480px;
+  border-radius:24px;
   width:100%;
+  overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,.4);
+}
+.fz-frozen-card-top{
+  background:linear-gradient(135deg,#e8392f,#c0392b);
+  padding:28px 28px 24px;
   text-align:center;
-  box-shadow:0 14px 40px rgba(0,0,0,.3);
   position:relative;
-  z-index:2;
+  overflow:hidden;
 }
-.fz-frozen-icon{
-  width:80px;
-  height:80px;
-  background:#fef3c7;
+.fz-frozen-card-top::before{
+  content:'';position:absolute;
+  width:200px;height:200px;
+  background:rgba(255,255,255,.06);
   border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:0 auto 16px;
-  font-size:36px;
+  top:-60px;right:-40px;
 }
-.fz-frozen-title{font-size:22px;font-weight:800;color:#10131a;margin-bottom:8px;}
-.fz-frozen-sub{font-size:14px;color:#4a5160;line-height:1.6;margin-bottom:18px;}
-.fz-frozen-stat{
-  background:#fafbfc;
-  border:1px solid #e3e6ec;
-  border-radius:10px;
-  padding:14px;
-  margin-bottom:18px;
-  font-size:13px;
-  color:#4a5160;
-  line-height:1.5;
+.fz-frozen-card-top::after{
+  content:'';position:absolute;
+  width:150px;height:150px;
+  background:rgba(255,255,255,.04);
+  border-radius:50%;
+  bottom:-50px;left:-30px;
 }
-.fz-frozen-stat b{color:#10131a;font-weight:800;}
+.fz-frozen-emoji{
+  font-size:48px;margin-bottom:12px;
+  position:relative;z-index:1;display:block;
+}
+.fz-frozen-title{
+  font-size:22px;font-weight:800;color:#fff;
+  margin-bottom:8px;line-height:1.3;
+  position:relative;z-index:1;
+}
+.fz-frozen-subtitle{
+  font-size:13px;color:rgba(255,255,255,.85);
+  line-height:1.5;position:relative;z-index:1;
+}
+
+/* Card body */
+.fz-frozen-card-body{padding:24px 28px;}
+
+/* Data preserved notice */
+.fz-data-safe{
+  display:flex;align-items:center;gap:10px;
+  background:#f0fdf4;border:1px solid #bbf7d0;
+  border-radius:10px;padding:12px 14px;margin-bottom:18px;
+}
+.fz-data-safe-icon{font-size:20px;flex-shrink:0;}
+.fz-data-safe-text{font-size:12px;color:#166534;line-height:1.5;}
+.fz-data-safe-text b{font-weight:700;display:block;margin-bottom:2px;}
+
+/* Stats row */
+.fz-frozen-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:8px;margin-bottom:20px;
+}
+.fz-frozen-stat-tile{
+  background:#f8fafc;border:1px solid #e3e6ec;
+  border-radius:10px;padding:10px 8px;text-align:center;
+}
+.fz-frozen-stat-val{font-size:18px;font-weight:800;color:#10131a;line-height:1;}
+.fz-frozen-stat-label{font-size:10px;color:#8a8f9c;font-weight:600;margin-top:3px;text-transform:uppercase;letter-spacing:.3px;}
+
+/* Divider */
+.fz-frozen-divider{
+  text-align:center;font-size:11px;color:#8a8f9c;font-weight:600;
+  margin-bottom:14px;letter-spacing:.3px;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;
+}
+.fz-frozen-divider::before,.fz-frozen-divider::after{
+  content:'';flex:1;height:1px;background:#e3e6ec;
+}
+
+/* Actions */
 .fz-frozen-actions{display:flex;flex-direction:column;gap:8px;}
 .fz-frozen-btn-primary{
-  background:#e8392f;
-  color:#fff;
-  padding:13px;
-  border:none;
-  border-radius:10px;
-  font-size:15px;
-  font-weight:700;
-  cursor:pointer;
-  font-family:inherit;
+  background:linear-gradient(135deg,#e8392f,#c0392b);
+  color:#fff;padding:14px;border:none;border-radius:12px;
+  font-size:15px;font-weight:700;cursor:pointer;
+  font-family:inherit;width:100%;letter-spacing:.2px;
+  box-shadow:0 4px 12px rgba(232,57,47,.3);
+  transition:opacity .15s,transform .15s;
 }
-.fz-frozen-btn-primary:hover{opacity:.92;}
+.fz-frozen-btn-primary:hover{opacity:.92;transform:translateY(-1px);}
+.fz-frozen-btn-primary:active{transform:translateY(0);}
+.fz-frozen-btn-wa{
+  background:#25D366;color:#fff;
+  padding:12px;border:none;border-radius:12px;
+  font-size:14px;font-weight:700;cursor:pointer;
+  font-family:inherit;width:100%;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:opacity .15s;
+}
+.fz-frozen-btn-wa:hover{opacity:.92;}
 .fz-frozen-btn-secondary{
-  background:transparent;
-  color:#4a5160;
-  padding:9px;
-  border:1px solid #e3e6ec;
-  border-radius:10px;
-  font-size:13px;
-  font-weight:600;
-  cursor:pointer;
-  font-family:inherit;
+  background:transparent;color:#4a5160;
+  padding:10px;border:1px solid #e3e6ec;border-radius:12px;
+  font-size:13px;font-weight:600;cursor:pointer;
+  font-family:inherit;width:100%;transition:background .1s;
 }
-.fz-frozen-btn-secondary:hover{background:#fafbfc;}
+.fz-frozen-btn-secondary:hover{background:#f8fafc;}
+
+/* Bottom note */
+.fz-frozen-note{
+  margin-top:16px;font-size:11px;color:rgba(255,255,255,.5);
+  text-align:center;line-height:1.5;
+}
+.fz-frozen-note a{color:rgba(255,255,255,.7);text-decoration:none;}
+.fz-frozen-note a:hover{color:#fff;}
 
 /* ============ PLANS MODAL ============ */
 #fzPlansOverlay{
@@ -13705,15 +13782,73 @@ function initNotifSystem() {
 
 <!-- ============ FROZEN SCREEN ============ -->
 <div id="fzFrozenScreen">
-  <div class="fz-frozen-box">
-    <div class="fz-frozen-icon">🔒</div>
-    <div class="fz-frozen-title" id="fzFrozenTitle">Your free trial has ended</div>
-    <div class="fz-frozen-sub" id="fzFrozenSub">All your data is safe and will be restored the moment you subscribe.</div>
-    <div class="fz-frozen-stat" id="fzFrozenStat"></div>
-    <div class="fz-frozen-actions">
-      <button class="fz-frozen-btn-primary" onclick="fzOpenPlans()">💎 View plans &amp; subscribe</button>
-      <button class="fz-frozen-btn-secondary" onclick="fzContactSupport()">💬 Contact support on WhatsApp</button>
-      <button class="fz-frozen-btn-secondary" onclick="fzSignOutFromFrozen()">Sign out</button>
+  <!-- Animated star background -->
+  <div class="fz-stars" id="fzStars"></div>
+
+  <div class="fz-frozen-wrap">
+    <!-- Top badge -->
+    <div class="fz-frozen-badge" id="fzFrozenBadge">Free Trial Ended</div>
+
+    <!-- Main card -->
+    <div class="fz-frozen-card">
+
+      <!-- Red header -->
+      <div class="fz-frozen-card-top">
+        <span class="fz-frozen-emoji" id="fzFrozenEmoji">⏰</span>
+        <div class="fz-frozen-title" id="fzFrozenTitle">Your Free Trial Has Ended</div>
+        <div class="fz-frozen-subtitle" id="fzFrozenSub">Subscribe to continue managing your academy without interruption</div>
+      </div>
+
+      <!-- Card body -->
+      <div class="fz-frozen-card-body">
+
+        <!-- Data safe notice -->
+        <div class="fz-data-safe">
+          <div class="fz-data-safe-icon">🔐</div>
+          <div class="fz-data-safe-text">
+            <b>Your data is 100% safe</b>
+            All your students, attendance records and fees are preserved. Subscribe anytime to restore full access instantly.
+          </div>
+        </div>
+
+        <!-- Stats (filled by JS) -->
+        <div class="fz-frozen-stats" id="fzFrozenStats" style="display:none;">
+          <div class="fz-frozen-stat-tile">
+            <div class="fz-frozen-stat-val" id="fzStatStudents">—</div>
+            <div class="fz-frozen-stat-label">Students</div>
+          </div>
+          <div class="fz-frozen-stat-tile">
+            <div class="fz-frozen-stat-val" id="fzStatAttendance">—</div>
+            <div class="fz-frozen-stat-label">Attendance</div>
+          </div>
+          <div class="fz-frozen-stat-tile">
+            <div class="fz-frozen-stat-val" id="fzStatDays">—</div>
+            <div class="fz-frozen-stat-label">Days used</div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="fz-frozen-divider">Choose your plan</div>
+        <div class="fz-frozen-actions">
+          <button class="fz-frozen-btn-primary" onclick="fzOpenPlans()">
+            💎 View Plans &amp; Subscribe
+          </button>
+          <button class="fz-frozen-btn-wa" onclick="fzContactSupport()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Chat with us on WhatsApp
+          </button>
+          <button class="fz-frozen-btn-secondary" onclick="fzSignOutFromFrozen()">
+            Sign out
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom note -->
+    <div class="fz-frozen-note">
+      Questions? Email us at <a href="mailto:support@feezo.com" id="fzSupportEmail">support@feezo.com</a><br>
+      Already subscribed? <a href="#" onclick="location.reload()">Refresh the page</a>
     </div>
   </div>
 </div>
@@ -13874,34 +14009,87 @@ function initNotifSystem() {
   }
 
   // ── FROZEN SCREEN ─────────────────────────────────────────────────
-  function fzShowFrozen(kind) {
-    const titles = {
-      'trial':  '🎁 Your free trial has ended',
-      'plan':   '⏰ Your subscription has expired',
-      'manual': '🔒 Account on hold'
-    };
-    const subs = {
-      'trial':  'All your data is safe. Subscribe now to continue using FeeZoapp without any interruption.',
-      'plan':   'Renew your subscription to continue. All your data is preserved.',
-      'manual': 'This account has been temporarily disabled. Please contact support to reactivate.'
-    };
-    document.getElementById('fzFrozenTitle').textContent = titles[kind] || titles.trial;
-    document.getElementById('fzFrozenSub').textContent = subs[kind] || subs.trial;
+  // fzShowFrozen is defined below with the new professional version
 
-    const a = _fzAcademy;
-    let stat = '';
-    if (kind === 'trial' && a.trial_ends_at) {
-      const d = new Date(a.trial_ends_at);
-      stat = `Trial ended on <b>${d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</b>`;
-    } else if (kind === 'plan' && a.plan_ends_at) {
-      const d = new Date(a.plan_ends_at);
-      stat = `${(a.plan||'').charAt(0).toUpperCase()+(a.plan||'').slice(1)} plan expired on <b>${d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</b>`;
+  function fzShowFrozen(kind) {
+    // Generate stars if not already done
+    const starsEl = document.getElementById('fzStars');
+    if (starsEl && !starsEl.children.length) {
+      for (let i = 0; i < 40; i++) {
+        const s = document.createElement('div');
+        s.className = 'fz-star-dot';
+        const size = Math.random() * 2.5 + 1;
+        s.style.cssText = `
+          width:${size}px;height:${size}px;
+          top:${Math.random()*100}%;left:${Math.random()*100}%;
+          animation-duration:${Math.random()*3+2}s;
+          animation-delay:${Math.random()*3}s;
+        `;
+        starsEl.appendChild(s);
+      }
     }
-    document.getElementById('fzFrozenStat').innerHTML = stat;
-    document.getElementById('fzFrozenStat').style.display = stat ? 'block' : 'none';
+
+    const configs = {
+      trial: {
+        badge:    'Free Trial Ended',
+        emoji:    '⏰',
+        title:    'Your Free Trial Has Ended',
+        subtitle: 'Subscribe now to continue managing your academy without losing any data or momentum.',
+      },
+      plan: {
+        badge:    'Subscription Expired',
+        emoji:    '🔄',
+        title:    'Your Subscription Has Expired',
+        subtitle: 'Renew your plan to restore full access. Your data is safe and waiting for you.',
+      },
+      manual: {
+        badge:    'Account On Hold',
+        emoji:    '🔒',
+        title:    'Your Account Is On Hold',
+        subtitle: 'Your account has been temporarily paused. Please contact our support team to reactivate.',
+      },
+    };
+    const cfg = configs[kind] || configs.trial;
+
+    // Set text content
+    const el = id => document.getElementById(id);
+    if (el('fzFrozenBadge'))   el('fzFrozenBadge').textContent   = cfg.badge;
+    if (el('fzFrozenEmoji'))   el('fzFrozenEmoji').textContent   = cfg.emoji;
+    if (el('fzFrozenTitle'))   el('fzFrozenTitle').textContent   = cfg.title;
+    if (el('fzFrozenSub'))     el('fzFrozenSub').textContent     = cfg.subtitle;
+
+    // Update support email from app_config
+    if (_fzAppConfig && _fzAppConfig.support_email) {
+      const emailLink = el('fzSupportEmail');
+      if (emailLink) {
+        emailLink.textContent = _fzAppConfig.support_email;
+        emailLink.href = 'mailto:' + _fzAppConfig.support_email;
+      }
+    }
+
+    // Load engagement stats from DB (student count, attendance, days since created)
+    if (window._sb && window._currentAcademyId) {
+      Promise.all([
+        window._sb.from('students').select('id', { count: 'exact', head: true }).eq('academy_id', window._currentAcademyId),
+        window._sb.from('attendance').select('id', { count: 'exact', head: true }).eq('academy_id', window._currentAcademyId),
+        window._sb.from('academies').select('created_at').eq('id', window._currentAcademyId).single()
+      ]).then(([stu, att, acad]) => {
+        const stuCount = stu.count || 0;
+        const attCount = att.count || 0;
+        const days = acad.data?.created_at
+          ? Math.max(1, Math.floor((Date.now() - new Date(acad.data.created_at).getTime()) / 86400000))
+          : '—';
+        const statsEl = el('fzFrozenStats');
+        if (statsEl && stuCount > 0) {
+          if (el('fzStatStudents'))  el('fzStatStudents').textContent  = stuCount;
+          if (el('fzStatAttendance'))el('fzStatAttendance').textContent = attCount;
+          if (el('fzStatDays'))      el('fzStatDays').textContent      = days;
+          statsEl.style.display = 'grid';
+        }
+      }).catch(() => {});
+    }
 
     document.getElementById('fzFrozenScreen').classList.add('show');
-    // Also disable pointer events on the app underneath so no clicks slip through
     document.body.style.overflow = 'hidden';
   }
   function fzHideFrozen() {
