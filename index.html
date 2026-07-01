@@ -3304,8 +3304,6 @@ async function doLogin() {
     // Step 3: Launch app
     _currentAcademyId = user.academyId;   // scope all data to this academy
     DB.users = [user];
-    // FeeZo patch: check plan status immediately on login (frozen/trial check)
-    if (window.fzReloadStatus) window.fzReloadStatus();
     _loginFailCount = 0; _loginLockUntil = 0; _persistLockout();  // reset lockout on success
     clearLoginError();
     btn.textContent = 'Login →'; btn.disabled = false;
@@ -3330,6 +3328,36 @@ async function doLogin() {
     // with the empty default in-memory DB.
 
     _appLaunched = true; // set immediately so onAuthStateChanged doesn't double-launch
+
+    // FeeZo patch: check frozen/trial BEFORE loading the dashboard
+    // If frozen, we show the frozen screen and return — dashboard never loads
+    {
+      const { data: _fzPlanData } = await window._sb
+        .from('academies')
+        .select('plan, trial_ends_at, plan_ends_at, frozen_at')
+        .eq('id', _currentAcademyId)
+        .single();
+      if (_fzPlanData) {
+        const _fp = _fzPlanData.plan;
+        const _fte = _fzPlanData.trial_ends_at;
+        const _fpe = _fzPlanData.plan_ends_at;
+        const _fnow = Date.now();
+        const _fFrozen = _fp === 'frozen'
+          || (_fp === 'trial' && _fte && new Date(_fte) < _fnow)
+          || (['basic','pro','premium'].includes(_fp) && _fpe && new Date(_fpe) < _fnow);
+        if (_fFrozen) {
+          // Hide the loading overlay before showing frozen screen
+          if (overlay) { overlay.classList.remove('active'); overlay.style.display = 'none'; }
+          // Set the academy data and show frozen screen
+          if (window._fzSetAcademy) window._fzSetAcademy(_fzPlanData);
+          if (window.fzShowFrozenPublic) {
+            window.fzShowFrozenPublic(_fp === 'frozen' ? 'manual' : (_fp === 'trial' ? 'trial' : 'plan'));
+          }
+          return; // ← stops here, dashboard never loads
+        }
+      }
+    }
+
     loadAllData().then(() => {
       finishLoadProgress(() => {
         if (overlay) overlay.classList.remove('active');
@@ -10414,9 +10442,33 @@ setInterval(() => {
       DB.users = [user];
       currentUser = user;
       touchSession();
-      // FeeZo patch: check plan status immediately on session restore
-      if (window.fzReloadStatus) window.fzReloadStatus();
       const overlay = document.getElementById('loadingOverlay');
+
+      // FeeZo patch: check frozen BEFORE loading dashboard (auto-login path)
+      {
+        const { data: _fzPlanData2 } = await window._sb
+          .from('academies')
+          .select('plan, trial_ends_at, plan_ends_at, frozen_at')
+          .eq('id', _currentAcademyId)
+          .single();
+        if (_fzPlanData2) {
+          const _fp2 = _fzPlanData2.plan;
+          const _fte2 = _fzPlanData2.trial_ends_at;
+          const _fpe2 = _fzPlanData2.plan_ends_at;
+          const _fnow2 = Date.now();
+          const _fFrozen2 = _fp2 === 'frozen'
+            || (_fp2 === 'trial' && _fte2 && new Date(_fte2) < _fnow2)
+            || (['basic','pro','premium'].includes(_fp2) && _fpe2 && new Date(_fpe2) < _fnow2);
+          if (_fFrozen2) {
+            if (window._fzSetAcademy) window._fzSetAcademy(_fzPlanData2);
+            if (window.fzShowFrozenPublic) {
+              window.fzShowFrozenPublic(_fp2 === 'frozen' ? 'manual' : (_fp2 === 'trial' ? 'trial' : 'plan'));
+            }
+            return; // stop here, dashboard never loads
+          }
+        }
+      }
+
       if (overlay) overlay.classList.add('active');
       startLoadProgress();
       document.getElementById('topRoleBadge').textContent = isAdmin() ? 'Admin' : 'Staff';
@@ -14306,6 +14358,10 @@ function initNotifSystem() {
   window.fzSubscribeClick = fzSubscribeClick;
   window.fzContactSupport = fzContactSupport;
   window.fzSignOutFromFrozen = fzSignOutFromFrozen;
+  window.fzReloadStatus = fzLoadStatus;
+  // Expose frozen screen controls to login flow
+  window.fzShowFrozenPublic = fzShowFrozen;
+  window._fzSetAcademy = (data) => { _fzAcademy = data; };
   window.fzDismissBanner = fzDismissBanner;
   window.fzReloadStatus = fzLoadStatus;  // call this after admin actions if needed
 })();
