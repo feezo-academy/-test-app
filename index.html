@@ -13918,11 +13918,13 @@ function initNotifSystem() {
     return new Promise(resolve => {
       let tries = 0;
       const check = () => {
-        // The existing index.html sets _currentAcademyId after login
-        if (window._sb && (typeof window._currentAcademyId !== 'undefined') && window._currentAcademyId) {
+        // _currentAcademyId starts as null, becomes a UUID after login
+        // Must be a non-empty string, not null/undefined/false
+        const aid = window._currentAcademyId;
+        if (window._sb && aid && typeof aid === 'string' && aid.length > 10) {
           resolve();
-        } else if (tries++ > 100) {
-          // Give up after 30s — not logged in or app failed to load
+        } else if (tries++ > 200) {
+          // Give up after 60s — user not logged in
           resolve();
         } else {
           setTimeout(check, 300);
