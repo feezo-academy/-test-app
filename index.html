@@ -13497,12 +13497,13 @@ function initNotifSystem() {
   position:fixed;
   inset:0;
   background:linear-gradient(135deg,#0f1f3d 0%,#1a1040 50%,#0a1628 100%);
-  z-index:9998;
+  z-index:100000;
   align-items:center;
   justify-content:center;
   padding:20px;
   overflow-y:auto;
   font-family:'Poppins','Segoe UI',system-ui,sans-serif;
+  -webkit-overflow-scrolling:touch;
 }
 #fzFrozenScreen.show{display:flex;}
 
@@ -13643,13 +13644,35 @@ function initNotifSystem() {
 .fz-frozen-note a{color:rgba(255,255,255,.7);text-decoration:none;}
 .fz-frozen-note a:hover{color:#fff;}
 
+
+/* ============ REASON BANNER (why am I frozen) ============ */
+.fz-reason-banner{
+  display:flex;align-items:flex-start;gap:12px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:12px;padding:14px 16px;
+  margin-bottom:14px;width:100%;
+  backdrop-filter:blur(10px);
+  position:relative;z-index:2;
+}
+.fz-reason-banner-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
+.fz-reason-banner-text{flex:1;min-width:0;}
+.fz-reason-banner-title{
+  font-size:13px;font-weight:700;color:#fff;
+  margin-bottom:3px;line-height:1.3;
+}
+.fz-reason-banner-sub{
+  font-size:11px;color:rgba(255,255,255,.65);line-height:1.4;
+}
+.fz-reason-banner-sub span{color:rgba(255,255,255,.9);font-weight:600;}
+
 /* ============ PLANS MODAL ============ */
 #fzPlansOverlay{
   display:none;
   position:fixed;
   inset:0;
   background:rgba(10,22,40,.85);
-  z-index:9999;
+  z-index:100001;
   align-items:flex-start;
   justify-content:center;
   padding:24px;
@@ -13786,6 +13809,15 @@ function initNotifSystem() {
   <div class="fz-stars" id="fzStars"></div>
 
   <div class="fz-frozen-wrap">
+    <!-- REASON BANNER: tells customer exactly why they're locked out -->
+    <div class="fz-reason-banner" id="fzReasonBanner">
+      <div class="fz-reason-banner-icon" id="fzReasonIcon">⏰</div>
+      <div class="fz-reason-banner-text">
+        <div class="fz-reason-banner-title" id="fzReasonTitle">Your 7-day free trial has expired</div>
+        <div class="fz-reason-banner-sub" id="fzReasonSub">Your account was automatically paused on <span id="fzReasonDate">—</span></div>
+      </div>
+    </div>
+
     <!-- Top badge -->
     <div class="fz-frozen-badge" id="fzFrozenBadge">Free Trial Ended</div>
 
@@ -14019,55 +14051,54 @@ function initNotifSystem() {
         const s = document.createElement('div');
         s.className = 'fz-star-dot';
         const size = Math.random() * 2.5 + 1;
-        s.style.cssText = `
-          width:${size}px;height:${size}px;
-          top:${Math.random()*100}%;left:${Math.random()*100}%;
-          animation-duration:${Math.random()*3+2}s;
-          animation-delay:${Math.random()*3}s;
-        `;
+        s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${Math.random()*3+2}s;animation-delay:${Math.random()*3}s;`;
         starsEl.appendChild(s);
       }
     }
 
-    const configs = {
-      trial: {
-        badge:    'Free Trial Ended',
-        emoji:    '⏰',
-        title:    'Your Free Trial Has Ended',
-        subtitle: 'Subscribe now to continue managing your academy without losing any data or momentum.',
-      },
-      plan: {
-        badge:    'Subscription Expired',
-        emoji:    '🔄',
-        title:    'Your Subscription Has Expired',
-        subtitle: 'Renew your plan to restore full access. Your data is safe and waiting for you.',
-      },
-      manual: {
-        badge:    'Account On Hold',
-        emoji:    '🔒',
-        title:    'Your Account Is On Hold',
-        subtitle: 'Your account has been temporarily paused. Please contact our support team to reactivate.',
-      },
-    };
-    const cfg = configs[kind] || configs.trial;
-
-    // Set text content
     const el = id => document.getElementById(id);
-    if (el('fzFrozenBadge'))   el('fzFrozenBadge').textContent   = cfg.badge;
-    if (el('fzFrozenEmoji'))   el('fzFrozenEmoji').textContent   = cfg.emoji;
-    if (el('fzFrozenTitle'))   el('fzFrozenTitle').textContent   = cfg.title;
-    if (el('fzFrozenSub'))     el('fzFrozenSub').textContent     = cfg.subtitle;
+    const a = _fzAcademy || {};
 
-    // Update support email from app_config
-    if (_fzAppConfig && _fzAppConfig.support_email) {
-      const emailLink = el('fzSupportEmail');
-      if (emailLink) {
-        emailLink.textContent = _fzAppConfig.support_email;
-        emailLink.href = 'mailto:' + _fzAppConfig.support_email;
-      }
+    // ── Format the expiry date ──
+    let expiryDate = '—';
+    if (kind === 'trial' && a.trial_ends_at) {
+      expiryDate = new Date(a.trial_ends_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+    } else if (kind === 'plan' && a.plan_ends_at) {
+      expiryDate = new Date(a.plan_ends_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+    } else if (kind === 'manual' && a.frozen_at) {
+      expiryDate = new Date(a.frozen_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
-    // Load engagement stats from DB (student count, attendance, days since created)
+    // ── Reason banner (the "why" line) ──
+    const reasons = {
+      trial:  { icon: '⏰', title: 'Your 7-day free trial has expired', sub: 'Your account was automatically paused on' },
+      plan:   { icon: '🔄', title: `Your ${(a.plan||'').charAt(0).toUpperCase()+(a.plan||'').slice(1)} plan has expired`, sub: 'Your subscription ended on' },
+      manual: { icon: '🔒', title: 'Your account has been put on hold', sub: 'Your account was paused on' },
+    };
+    const reason = reasons[kind] || reasons.trial;
+    if (el('fzReasonIcon'))  el('fzReasonIcon').textContent  = reason.icon;
+    if (el('fzReasonTitle')) el('fzReasonTitle').textContent = reason.title;
+    if (el('fzReasonSub'))   el('fzReasonSub').innerHTML     = reason.sub + ' <span id="fzReasonDate">' + expiryDate + '</span>';
+
+    // ── Main card ──
+    const configs = {
+      trial:  { badge: 'Free Trial Ended',       emoji: '⏰', title: 'Your Free Trial Has Ended',         subtitle: 'Subscribe now to continue managing your academy without interruption.' },
+      plan:   { badge: 'Subscription Expired',   emoji: '🔄', title: 'Your Subscription Has Expired',     subtitle: 'Renew your plan to restore full access. Your data is safe and waiting for you.' },
+      manual: { badge: 'Account On Hold',         emoji: '🔒', title: 'Your Account Is On Hold',           subtitle: 'Your account has been temporarily paused. Please contact support to reactivate.' },
+    };
+    const cfg = configs[kind] || configs.trial;
+    if (el('fzFrozenBadge'))    el('fzFrozenBadge').textContent    = cfg.badge;
+    if (el('fzFrozenEmoji'))    el('fzFrozenEmoji').textContent    = cfg.emoji;
+    if (el('fzFrozenTitle'))    el('fzFrozenTitle').textContent    = cfg.title;
+    if (el('fzFrozenSub'))      el('fzFrozenSub').textContent      = cfg.subtitle;
+
+    // ── Support email from app_config ──
+    if (_fzAppConfig && _fzAppConfig.support_email) {
+      const emailLink = el('fzSupportEmail');
+      if (emailLink) { emailLink.textContent = _fzAppConfig.support_email; emailLink.href = 'mailto:' + _fzAppConfig.support_email; }
+    }
+
+    // ── Live engagement stats ──
     if (window._sb && window._currentAcademyId) {
       Promise.all([
         window._sb.from('students').select('id', { count: 'exact', head: true }).eq('academy_id', window._currentAcademyId),
@@ -14076,21 +14107,25 @@ function initNotifSystem() {
       ]).then(([stu, att, acad]) => {
         const stuCount = stu.count || 0;
         const attCount = att.count || 0;
-        const days = acad.data?.created_at
-          ? Math.max(1, Math.floor((Date.now() - new Date(acad.data.created_at).getTime()) / 86400000))
-          : '—';
+        const days = acad.data?.created_at ? Math.max(1, Math.floor((Date.now() - new Date(acad.data.created_at).getTime()) / 86400000)) : '—';
         const statsEl = el('fzFrozenStats');
         if (statsEl && stuCount > 0) {
-          if (el('fzStatStudents'))  el('fzStatStudents').textContent  = stuCount;
-          if (el('fzStatAttendance'))el('fzStatAttendance').textContent = attCount;
-          if (el('fzStatDays'))      el('fzStatDays').textContent      = days;
+          if (el('fzStatStudents'))   el('fzStatStudents').textContent   = stuCount;
+          if (el('fzStatAttendance')) el('fzStatAttendance').textContent = attCount;
+          if (el('fzStatDays'))       el('fzStatDays').textContent       = days;
           statsEl.style.display = 'grid';
         }
       }).catch(() => {});
     }
 
+    // ── Show overlay + block app ──
     document.getElementById('fzFrozenScreen').classList.add('show');
     document.body.style.overflow = 'hidden';
+
+    // Kill any open drawers, modals, overlays the app may have open
+    // so they don't bleed through on the edges
+    document.querySelectorAll('.drawer, .confirm-overlay, .chart-page')
+      .forEach(el => { el.style.display = 'none'; });
   }
   function fzHideFrozen() {
     document.getElementById('fzFrozenScreen').classList.remove('show');
