@@ -3304,6 +3304,8 @@ async function doLogin() {
     // Step 3: Launch app
     _currentAcademyId = user.academyId;   // scope all data to this academy
     DB.users = [user];
+    // FeeZo patch: check plan status immediately on login (frozen/trial check)
+    if (window.fzReloadStatus) window.fzReloadStatus();
     _loginFailCount = 0; _loginLockUntil = 0; _persistLockout();  // reset lockout on success
     clearLoginError();
     btn.textContent = 'Login →'; btn.disabled = false;
@@ -10412,6 +10414,8 @@ setInterval(() => {
       DB.users = [user];
       currentUser = user;
       touchSession();
+      // FeeZo patch: check plan status immediately on session restore
+      if (window.fzReloadStatus) window.fzReloadStatus();
       const overlay = document.getElementById('loadingOverlay');
       if (overlay) overlay.classList.add('active');
       startLoadProgress();
@@ -14279,17 +14283,20 @@ function initNotifSystem() {
   // Run superadmin check immediately on page load (before login completes)
   setTimeout(() => fzCheckSuperadminRedirect(), 1000);
 
-  // Once the existing app finishes login + loadAllData, kick in
-  fzWaitForApp().then(() => {
-    fzLoadStatus();
-    // Check more frequently so freeze from admin takes effect quickly (15s)
-    if (_fzBannerCheckInterval) clearInterval(_fzBannerCheckInterval);
-    _fzBannerCheckInterval = setInterval(fzLoadStatus, 15000);
-    // Also re-check when the tab regains focus (user comes back to the app)
-    window.addEventListener('focus', fzLoadStatus);
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') fzLoadStatus();
-    });
+  // PRIMARY: fzReloadStatus() is called directly from the login flow (see login patches above)
+  // BACKUP: polling every 15s catches edge cases (admin freezes while customer is already logged in)
+  setInterval(() => {
+    if (window._currentAcademyId && typeof window._currentAcademyId === 'string') {
+      fzLoadStatus();
+    }
+  }, 15000);
+
+  // Re-check when tab comes back into focus
+  window.addEventListener('focus', () => {
+    if (window._currentAcademyId) fzLoadStatus();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && window._currentAcademyId) fzLoadStatus();
   });
 
   // Expose so frozen screen + UI can trigger
