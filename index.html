@@ -3329,33 +3329,49 @@ async function doLogin() {
 
     _appLaunched = true; // set immediately so onAuthStateChanged doesn't double-launch
 
-    // FeeZo patch: check frozen/trial BEFORE loading the dashboard
-    // If frozen, we show the frozen screen and return — dashboard never loads
+    // FeeZo patch: check frozen/trial BEFORE loading dashboard
+    // Fully self-contained — no dependency on patch script timing
     {
-      const { data: _fzPlanData } = await window._sb
-        .from('academies')
-        .select('plan, trial_ends_at, plan_ends_at, frozen_at')
-        .eq('id', _currentAcademyId)
-        .single();
-      if (_fzPlanData) {
-        const _fp = _fzPlanData.plan;
-        const _fte = _fzPlanData.trial_ends_at;
-        const _fpe = _fzPlanData.plan_ends_at;
-        const _fnow = Date.now();
-        const _fFrozen = _fp === 'frozen'
-          || (_fp === 'trial' && _fte && new Date(_fte) < _fnow)
-          || (['basic','pro','premium'].includes(_fp) && _fpe && new Date(_fpe) < _fnow);
-        if (_fFrozen) {
-          // Hide the loading overlay before showing frozen screen
-          if (overlay) { overlay.classList.remove('active'); overlay.style.display = 'none'; }
-          // Set the academy data and show frozen screen
-          if (window._fzSetAcademy) window._fzSetAcademy(_fzPlanData);
-          if (window.fzShowFrozenPublic) {
-            window.fzShowFrozenPublic(_fp === 'frozen' ? 'manual' : (_fp === 'trial' ? 'trial' : 'plan'));
+      try {
+        const { data: _fzd } = await window._sb
+          .from('academies')
+          .select('plan, trial_ends_at, plan_ends_at, frozen_at')
+          .eq('id', _currentAcademyId)
+          .single();
+        if (_fzd) {
+          const _fp = _fzd.plan, _fte = _fzd.trial_ends_at, _fpe = _fzd.plan_ends_at, _fn = Date.now();
+          const _ff = _fp === 'frozen'
+            || (_fp === 'trial' && _fte && new Date(_fte) < _fn)
+            || (['basic','pro','premium'].includes(_fp) && _fpe && new Date(_fpe) < _fn);
+          if (_ff) {
+            if (overlay) { overlay.classList.remove('active'); overlay.style.display = 'none'; }
+            // Show frozen screen — raw DOM, no external dependency
+            const _fsel = document.getElementById('fzFrozenScreen');
+            if (_fsel) {
+              document.body.style.overflow = 'hidden';
+              _fsel.style.cssText = 'display:flex !important;position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1f3d,#1a1040,#0a1628);align-items:center;justify-content:center;padding:20px;overflow-y:auto;font-family:Poppins,sans-serif;';
+              // Set titles
+              const _kind = _fp === 'frozen' ? 'manual' : (_fp === 'trial' ? 'trial' : 'plan');
+              const _titles = {trial:'Your Free Trial Has Ended',plan:'Your Subscription Has Expired',manual:'Your Account Is On Hold'};
+              const _badges = {trial:'Free Trial Ended',plan:'Subscription Expired',manual:'Account On Hold'};
+              const _emojis = {trial:'⏰',plan:'🔄',manual:'🔒'};
+              const _reasonTitles = {trial:'Your 7-day free trial has expired',plan:'Your '+_fp+' plan has expired',manual:'Your account has been put on hold'};
+              const _el = id => document.getElementById(id);
+              if(_el('fzFrozenTitle'))    _el('fzFrozenTitle').textContent    = _titles[_kind];
+              if(_el('fzFrozenBadge'))    _el('fzFrozenBadge').textContent    = _badges[_kind];
+              if(_el('fzFrozenEmoji'))    _el('fzFrozenEmoji').textContent    = _emojis[_kind];
+              if(_el('fzFrozenSub'))      _el('fzFrozenSub').textContent      = 'Subscribe now to restore full access. Your data is 100% safe.';
+              if(_el('fzReasonTitle'))    _el('fzReasonTitle').textContent    = _reasonTitles[_kind];
+              const _expDate = _fp === 'trial' ? _fte : (_fp === 'frozen' ? _fzd.frozen_at : _fpe);
+              const _dateStr = _expDate ? new Date(_expDate).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}) : '—';
+              if(_el('fzReasonSub'))      _el('fzReasonSub').innerHTML = 'Your account was paused on <span style="color:#fff;font-weight:700;">' + _dateStr + '</span>';
+              // Load stats async (best effort)
+              if (window.fzShowFrozenPublic) window.fzShowFrozenPublic(_kind);
+            }
+            return; // dashboard never loads
           }
-          return; // ← stops here, dashboard never loads
         }
-      }
+      } catch(_fze) { console.warn('FeeZo frozen check failed:', _fze); }
     }
 
     loadAllData().then(() => {
@@ -10445,28 +10461,43 @@ setInterval(() => {
       const overlay = document.getElementById('loadingOverlay');
 
       // FeeZo patch: check frozen BEFORE loading dashboard (auto-login path)
+      // Fully self-contained — same logic as manual login, no external dependency
       {
-        const { data: _fzPlanData2 } = await window._sb
-          .from('academies')
-          .select('plan, trial_ends_at, plan_ends_at, frozen_at')
-          .eq('id', _currentAcademyId)
-          .single();
-        if (_fzPlanData2) {
-          const _fp2 = _fzPlanData2.plan;
-          const _fte2 = _fzPlanData2.trial_ends_at;
-          const _fpe2 = _fzPlanData2.plan_ends_at;
-          const _fnow2 = Date.now();
-          const _fFrozen2 = _fp2 === 'frozen'
-            || (_fp2 === 'trial' && _fte2 && new Date(_fte2) < _fnow2)
-            || (['basic','pro','premium'].includes(_fp2) && _fpe2 && new Date(_fpe2) < _fnow2);
-          if (_fFrozen2) {
-            if (window._fzSetAcademy) window._fzSetAcademy(_fzPlanData2);
-            if (window.fzShowFrozenPublic) {
-              window.fzShowFrozenPublic(_fp2 === 'frozen' ? 'manual' : (_fp2 === 'trial' ? 'trial' : 'plan'));
+        try {
+          const { data: _fzd2 } = await window._sb
+            .from('academies')
+            .select('plan, trial_ends_at, plan_ends_at, frozen_at')
+            .eq('id', _currentAcademyId)
+            .single();
+          if (_fzd2) {
+            const _fp2 = _fzd2.plan, _fte2 = _fzd2.trial_ends_at, _fpe2 = _fzd2.plan_ends_at, _fn2 = Date.now();
+            const _ff2 = _fp2 === 'frozen'
+              || (_fp2 === 'trial' && _fte2 && new Date(_fte2) < _fn2)
+              || (['basic','pro','premium'].includes(_fp2) && _fpe2 && new Date(_fpe2) < _fn2);
+            if (_ff2) {
+              const _fsel2 = document.getElementById('fzFrozenScreen');
+              if (_fsel2) {
+                document.body.style.overflow = 'hidden';
+                _fsel2.style.cssText = 'display:flex !important;position:fixed;inset:0;z-index:2147483647;background:linear-gradient(135deg,#0f1f3d,#1a1040,#0a1628);align-items:center;justify-content:center;padding:20px;overflow-y:auto;font-family:Poppins,sans-serif;';
+                const _kind2 = _fp2 === 'frozen' ? 'manual' : (_fp2 === 'trial' ? 'trial' : 'plan');
+                const _titles2 = {trial:'Your Free Trial Has Ended',plan:'Your Subscription Has Expired',manual:'Your Account Is On Hold'};
+                const _badges2 = {trial:'Free Trial Ended',plan:'Subscription Expired',manual:'Account On Hold'};
+                const _emojis2 = {trial:'⏰',plan:'🔄',manual:'🔒'};
+                const _el2 = id => document.getElementById(id);
+                if(_el2('fzFrozenTitle')) _el2('fzFrozenTitle').textContent = _titles2[_kind2];
+                if(_el2('fzFrozenBadge')) _el2('fzFrozenBadge').textContent = _badges2[_kind2];
+                if(_el2('fzFrozenEmoji')) _el2('fzFrozenEmoji').textContent = _emojis2[_kind2];
+                if(_el2('fzFrozenSub'))   _el2('fzFrozenSub').textContent   = 'Subscribe now to restore full access. Your data is 100% safe.';
+                if(_el2('fzReasonTitle')) _el2('fzReasonTitle').textContent = _fp2 === 'trial' ? 'Your 7-day free trial has expired' : (_fp2 === 'frozen' ? 'Your account has been put on hold' : 'Your '+_fp2+' plan has expired');
+                const _expDate2 = _fp2 === 'trial' ? _fte2 : (_fp2 === 'frozen' ? _fzd2.frozen_at : _fpe2);
+                const _ds2 = _expDate2 ? new Date(_expDate2).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}) : '—';
+                if(_el2('fzReasonSub')) _el2('fzReasonSub').innerHTML = 'Your account was paused on <span style="color:#fff;font-weight:700;">' + _ds2 + '</span>';
+                if (window.fzShowFrozenPublic) window.fzShowFrozenPublic(_kind2);
+              }
+              return; // dashboard never loads
             }
-            return; // stop here, dashboard never loads
           }
-        }
+        } catch(_fze2) { console.warn('FeeZo auto-login frozen check failed:', _fze2); }
       }
 
       if (overlay) overlay.classList.add('active');
