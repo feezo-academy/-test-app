@@ -1961,8 +1961,7 @@ body { font-family: 'Poppins', 'Segoe UI', 'Noto Sans', Roboto, 'Arial Unicode M
           <button class="btn btn-primary btn-xs" onclick="takeSnapshotFromSettings()">📸 Snap Now</button>
         </div>
         <div style="font-size:11px;color:var(--gray);margin-bottom:10px;line-height:1.6;">
-          Auto-snapshot taken once daily (on first login of the day). Last 30 days kept.
-          Tap <b>↩ Restore</b> to recover all data from any snapshot.
+          Daily restore point created on first login. Use <b>↩ Restore</b> to undo accidental changes.
         </div>
         <div id="snapshotListWrapSettings" style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;">
           <div class="empty-state" style="padding:14px;">Loading…</div>
@@ -3834,6 +3833,13 @@ function applyRoleUI() {
   const plan    = (DB.settings && DB.settings.plan) || 'trial';
   const isPro   = ['pro','premium'].includes(plan);
   const isPrem  = plan === 'premium';
+
+  // Plans button in hamburger — admin only, hide for Premium (already max plan)
+  const plansBtn = document.getElementById('tnav-plans-btn');
+  if (plansBtn) {
+    const showPlans = isAdmin() && plan !== 'premium';
+    plansBtn.style.display = showPlans ? 'block' : 'none';
+  }
 
   // Enquiry tab — Pro+
   const enqNav  = document.getElementById('tnav-enquiry');
@@ -13433,8 +13439,9 @@ function saveInlineRollEdit(sid, newRoll) {
     <button class="tab-drop-item"        id="tnav-schedules"   onclick="tabNav('schedules')">   📅 <span>Schedules</span></button>
     <button class="tab-drop-item"        id="tnav-profile"     onclick="tabNav('profile')">     👤 <span>Profile</span></button>
   </nav>
-  <!-- Logout at bottom -->
-  <div style="padding:10px;border-top:1px solid var(--border);">
+  <!-- Logout + Plans at bottom -->
+  <div style="padding:10px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:7px;">
+    <button id="tnav-plans-btn" class="admin-only" style="width:100%;padding:11px;background:linear-gradient(90deg,#2563eb,#7c3aed);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;display:none;" onclick="closeTabMenu();fzOpenPlans()">💎 View Plans &amp; Subscribe</button>
     <button style="width:100%;padding:11px;background:none;border:1px solid var(--border);border-radius:10px;color:var(--red);font-size:13px;font-weight:700;cursor:pointer;" onclick="closeTabMenu();doLogout()">🚪 Logout</button>
   </div>
 </div>
