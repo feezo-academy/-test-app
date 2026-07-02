@@ -1,0 +1,173 @@
+Create a premium SaaS mobile login page for “Feezo – Academy Management Platform”.
+
+STYLE:
+Modern SaaS, minimal, premium, trustworthy, polished, clean.
+
+LAYOUT:
+- Full mobile screen
+- Dark blue premium background
+- Center aligned white glass-style login card
+- Strong visual hierarchy
+- Spacious padding and soft shadows
+
+BACKGROUND:
+Primary Background: #071B3A
+Gradient Overlay:
+top → #0B1F52
+bottom → #071B3A
+
+Effects:
+- Soft radial blue glow behind login card
+- Minimal stars (10–15 only)
+- Very subtle floating blur circles
+- Premium depth, not gaming style
+
+LOGO AREA:
+Top centered
+
+Logo colors:
+Blue → #2563EB
+Purple → #7C3AED
+
+Title:
+Feezo
+
+Subtitle:
+Academy Management Platform
+
+Typography:
+Weight: 700
+Letter spacing: -1%
+
+CARD:
+Background: #FFFFFF
+Radius: 32px
+
+Shadow:
+0 20px 60px rgba(0,0,0,.12)
+
+Padding:
+32px
+
+HEADER:
+Title:
+Welcome back
+
+Font:
+Poppins Bold
+Size: 34px
+Color: #0F172A
+
+Subtitle:
+Sign in to continue to Feezo
+
+Font:
+Poppins Medium
+Size: 16px
+Color: #64748B
+
+INPUTS:
+Height: 58px
+
+Background:
+#FFFFFF
+
+Border:
+Idle → #D6DCE8
+Focused → #2563EB
+
+Radius:
+18px
+
+Icon Color:
+Primary Blue #2563EB
+
+Placeholder:
+#94A3B8
+
+Text:
+#0F172A
+
+LABELS:
+Font:
+Poppins SemiBold
+
+Size:
+15px
+
+Color:
+#1E293B
+
+BUTTON:
+Text:
+Sign In
+
+Height:
+58px
+
+Radius:
+18px
+
+Gradient:
+Left → #2563EB
+Right → #7C3AED
+
+Text:
+White
+
+Font:
+Poppins SemiBold
+Size:
+18px
+
+Shadow:
+0 10px 30px rgba(37,99,235,.35)
+
+BUTTON INTERACTION:
+Hover:
+Scale 1.02
+
+Press:
+Scale .98
+
+Transition:
+250ms ease
+
+SECONDARY ACTIONS:
+Remember me:
+Color #475569
+
+Forgot password:
+#2563EB
+
+SUPPORT:
+Need help? Contact Support
+
+Accent:
+#2563EB
+
+FOOTER:
+© 2026 Feezo Solutions • Secure Login
+
+Font:
+Poppins Medium
+Size:
+13px
+Color:
+rgba(255,255,255,.75)
+
+FONTS:
+Primary:
+Poppins
+
+Fallback:
+Inter, sans-serif
+
+Spacing:
+8px system
+
+Card max width:
+420px
+
+Overall Feel:
+Stripe + Notion + modern SaaS dashboard aesthetic.
