@@ -3521,6 +3521,7 @@ async function doLogin() {
         if (overlay) overlay.classList.remove('active');
         updateLogos();  // refresh logo now that settings loaded
         applyAcadSettings();  // refresh academy name/tagline now that settings loaded
+        applyRoleUI();  // re-apply now that DB.settings.plan is populated from Supabase
         initNotifSystem();
         addLog('login', 'Logged in');
         if (isDefaultPassword(user)) {
@@ -3839,6 +3840,25 @@ function applyRoleUI() {
   if (plansBtn) {
     const showPlans = isAdmin() && plan !== 'premium';
     plansBtn.style.display = showPlans ? 'block' : 'none';
+  }
+
+  // Refresh plan badge in the side panel
+  const panelPlanBadge = document.getElementById('tabPanelPlanBadge');
+  if (panelPlanBadge && isAdmin()) {
+    const planLabels = { trial:'Trial', basic:'Basic', pro:'Pro', premium:'Premium', frozen:'Frozen' };
+    const planColors = {
+      trial:   { bg:'rgba(245,158,11,.15)', color:'#f59e0b', border:'rgba(245,158,11,.3)' },
+      basic:   { bg:'rgba(59,130,246,.15)',  color:'#3b82f6', border:'rgba(59,130,246,.3)' },
+      pro:     { bg:'rgba(124,58,237,.15)',  color:'#7c3aed', border:'rgba(124,58,237,.3)' },
+      premium: { bg:'rgba(16,185,129,.15)',  color:'#10b981', border:'rgba(16,185,129,.3)' },
+      frozen:  { bg:'rgba(239,68,68,.15)',   color:'#ef4444', border:'rgba(239,68,68,.3)'  },
+    };
+    const c = planColors[plan] || planColors.trial;
+    panelPlanBadge.textContent    = planLabels[plan] || plan;
+    panelPlanBadge.style.background = c.bg;
+    panelPlanBadge.style.color      = c.color;
+    panelPlanBadge.style.border     = '1px solid ' + c.border;
+    panelPlanBadge.style.display    = 'inline';
   }
 
   // Enquiry tab — Pro+
@@ -10963,6 +10983,7 @@ setInterval(() => {
           if (overlay) overlay.classList.remove('active');
           updateLogos();
           applyAcadSettings();
+          applyRoleUI();  // re-apply now that DB.settings.plan is populated from Supabase
           initNotifSystem();
           addLog('login', 'Auto-login (session restored)');
           showToast('Welcome back, ' + (user.name || user.id) + '! ✓', 'success');
@@ -12345,6 +12366,27 @@ function toggleTabMenu() {
     const roleTxt = document.getElementById('topRoleBadge')?.textContent || (typeof isAdmin === 'function' && isAdmin() ? 'Admin' : 'Staff');
     const pRole = document.getElementById('tabPanelRoleBadge');
     if (pRole) pRole.textContent = roleTxt;
+    // Show plan badge — only for admins (staff don't need to see plan)
+    const planBadgeEl = document.getElementById('tabPanelPlanBadge');
+    if (planBadgeEl && typeof isAdmin === 'function' && isAdmin()) {
+      const plan = (typeof DB !== 'undefined' && DB.settings && DB.settings.plan) || 'trial';
+      const planLabels = { trial:'Trial', basic:'Basic', pro:'Pro', premium:'Premium', frozen:'Frozen' };
+      const planColors = {
+        trial:   { bg:'rgba(245,158,11,.15)', color:'#f59e0b', border:'rgba(245,158,11,.3)' },
+        basic:   { bg:'rgba(59,130,246,.15)',  color:'#3b82f6', border:'rgba(59,130,246,.3)' },
+        pro:     { bg:'rgba(124,58,237,.15)',  color:'#7c3aed', border:'rgba(124,58,237,.3)' },
+        premium: { bg:'rgba(16,185,129,.15)',  color:'#10b981', border:'rgba(16,185,129,.3)' },
+        frozen:  { bg:'rgba(239,68,68,.15)',   color:'#ef4444', border:'rgba(239,68,68,.3)'  },
+      };
+      const c = planColors[plan] || planColors.trial;
+      planBadgeEl.textContent = planLabels[plan] || plan;
+      planBadgeEl.style.background = c.bg;
+      planBadgeEl.style.color      = c.color;
+      planBadgeEl.style.border     = '1px solid ' + c.border;
+      planBadgeEl.style.display    = 'inline';
+    } else if (planBadgeEl) {
+      planBadgeEl.style.display = 'none';
+    }
     // Set avatar initial
     const avatar = document.getElementById('tabPanelAvatar');
     if (avatar && pUname) {
@@ -13423,6 +13465,7 @@ function saveInlineRollEdit(sid, newRoll) {
         <div style="font-size:13px;font-weight:700;color:var(--offwhite);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="tabPanelUserName"></div>
         <div style="margin-top:3px;">
           <span id="tabPanelRoleBadge" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--accent2)22;color:var(--accent2);border:1px solid var(--accent2)44;"></span>
+          <span id="tabPanelPlanBadge" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:4px;display:none;"></span>
         </div>
       </div>
     </div>
@@ -13433,10 +13476,10 @@ function saveInlineRollEdit(sid, newRoll) {
     <button class="tab-drop-item"        id="tnav-students"    onclick="tabNav('students')">    👥 <span>Students</span></button>
     <button class="tab-drop-item"        id="tnav-attendance"  onclick="tabNav('attendance')">  📅 <span>Attendance</span></button>
     <button class="tab-drop-item"        id="tnav-fees"        onclick="tabNav('fees')">        💰 <span>Fees</span></button>
-    <button class="tab-drop-item"        id="tnav-enquiry"     onclick="tabNav('enquiry')">     💬 <span>Enquiry</span></button>
-    <button class="tab-drop-item"        id="tnav-activity"    onclick="tabNav('activity')">    📋 <span>Activity Log</span></button>
-    <button class="tab-drop-item"        id="tnav-performance" onclick="tabNav('performance')"> 🏆 <span>Performance</span></button>
-    <button class="tab-drop-item"        id="tnav-schedules"   onclick="tabNav('schedules')">   📅 <span>Schedules</span></button>
+    <button class="tab-drop-item"        id="tnav-enquiry"     onclick="tabNav('enquiry')"     style="display:none;">💬 <span>Enquiry</span></button>
+    <button class="tab-drop-item"        id="tnav-activity"    onclick="tabNav('activity')"    style="display:none;">📋 <span>Activity Log</span></button>
+    <button class="tab-drop-item"        id="tnav-performance" onclick="tabNav('performance')" style="display:none;">🏆 <span>Performance</span></button>
+    <button class="tab-drop-item"        id="tnav-schedules"   onclick="tabNav('schedules')"   style="display:none;">📅 <span>Schedules</span></button>
     <button class="tab-drop-item"        id="tnav-profile"     onclick="tabNav('profile')">     👤 <span>Profile</span></button>
   </nav>
   <!-- Logout + Plans at bottom -->
@@ -14818,6 +14861,26 @@ function initNotifSystem() {
       _fzAcademy   = acadRes.data || null;
       _fzAppConfig = cfgRes.data || null;
       _fzPlans     = plansRes.data || [];
+
+      // ── Sync plan into DB.settings so applyRoleUI() reads the latest ──
+      if (_fzAcademy && window.DB && window.DB.settings) {
+        const newPlan = _fzAcademy.plan || 'trial';
+        const oldPlan = window.DB.settings.plan || 'trial';
+        if (newPlan !== oldPlan) {
+          // Plan changed while user is logged in — update and refresh UI
+          window.DB.settings.plan        = newPlan;
+          window.DB.settings.trialEndsAt = _fzAcademy.trial_ends_at || null;
+          window.DB.settings.planEndsAt  = _fzAcademy.plan_ends_at  || null;
+          // Refresh tabs, badges, plan limits without requiring logout
+          if (typeof applyRoleUI === 'function') applyRoleUI();
+          // Re-init year dropdowns in case history window changed
+          if (typeof initAttFilters === 'function') initAttFilters();
+          if (typeof initFeeFilters === 'function') initFeeFilters();
+          // Re-render snapshot list in case retention changed
+          if (typeof renderSnapshotList === 'function') renderSnapshotList();
+          console.log(`FeeZo: plan updated live ${oldPlan} → ${newPlan}`);
+        }
+      }
 
       fzUpdateBannerAndFrozen();
     } catch(e) {
