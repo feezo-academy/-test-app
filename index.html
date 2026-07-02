@@ -761,11 +761,14 @@ body { font-family: 'Poppins', 'Segoe UI', 'Noto Sans', Roboto, 'Arial Unicode M
     <!-- ===== STUDENTS ===== -->
     <div class="page" id="pageStudents" style="display:flex;flex-direction:column;overflow:hidden;padding-bottom:0;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-        <div class="section-title" style="margin-bottom:0;">👥 Students</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="section-title" style="margin-bottom:0;">👥 Students</div>
+          <div id="studentLimitBadge" style="font-size:11px;font-weight:600;padding:2px 9px;border-radius:12px;background:var(--card2);color:var(--gray);"></div>
+        </div>
         <div style="display:flex;gap:5px;align-items:center;">
-          <button class="btn btn-gold btn-sm" onclick="downloadStudents('pdf')">PDF</button>
-          <button class="btn btn-success btn-sm" onclick="downloadStudents('xl')">XL</button>
-          <button class="btn btn-outline btn-sm" onclick="openImportModal()" title="Import students from CSV/Excel">⬆️ Import</button>
+          <button class="btn btn-gold btn-sm" onclick="gatedFeature('reports','downloadStudents',['pdf'])">PDF</button>
+          <button class="btn btn-success btn-sm" onclick="gatedFeature('reports','downloadStudents',['xl'])">XL</button>
+          <button class="btn btn-outline btn-sm" onclick="gatedFeature('bulk_import','openImportModal',[])" title="Import students from CSV/Excel">⬆️ Import</button>
           <button class="btn btn-primary btn-sm" onclick="openAddStudentModal()">+ Add</button>
         </div>
       </div>
@@ -820,9 +823,9 @@ body { font-family: 'Poppins', 'Segoe UI', 'Noto Sans', Roboto, 'Arial Unicode M
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;position:relative;">
         <div class="section-title" style="margin-bottom:0;">📅 Attendance</div>
         <div style="display:flex;gap:5px;align-items:center;">
-          <button class="btn btn-gold btn-sm" onclick="downloadAttendance('pdf')">PDF</button>
-          <button class="btn btn-success btn-sm" onclick="downloadAttendance('xl')">XL</button>
-          <button class="btn btn-outline btn-sm" onclick="openAttImportModal()" title="Import attendance from CSV/Excel">⬆️ Import</button>
+          <button class="btn btn-gold btn-sm" onclick="gatedFeature('reports','downloadAttendance',['pdf'])">PDF</button>
+          <button class="btn btn-success btn-sm" onclick="gatedFeature('reports','downloadAttendance',['xl'])">XL</button>
+          <button class="btn btn-outline btn-sm" onclick="gatedFeature('bulk_import','openAttImportModal',[])" title="Import attendance from CSV/Excel">⬆️ Import</button>
           <button onclick="openAttChart()" title="Attendance chart" aria-label="Attendance chart"
             style="width:32px;height:32px;border-radius:9px;background:var(--accent2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.15);">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
@@ -914,9 +917,9 @@ body { font-family: 'Poppins', 'Segoe UI', 'Noto Sans', Roboto, 'Arial Unicode M
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
         <div class="section-title" style="margin-bottom:0;">💰 Fee Payments</div>
         <div style="display:flex;gap:5px;align-items:center;">
-          <button class="btn btn-gold btn-sm" onclick="downloadFees('pdf')">PDF</button>
-          <button class="btn btn-success btn-sm" onclick="downloadFees('xl')">XL</button>
-          <button class="btn btn-outline btn-sm" onclick="openFeeImportModal()" title="Import fees from CSV/Excel">⬆️ Import</button>
+          <button class="btn btn-gold btn-sm" onclick="gatedFeature('reports','downloadFees',['pdf'])">PDF</button>
+          <button class="btn btn-success btn-sm" onclick="gatedFeature('reports','downloadFees',['xl'])">XL</button>
+          <button class="btn btn-outline btn-sm" onclick="gatedFeature('bulk_import','openFeeImportModal',[])" title="Import fees from CSV/Excel">⬆️ Import</button>
           <button onclick="openFeeChart()" title="Fees chart" aria-label="Fees chart"
             style="width:32px;height:32px;border-radius:9px;background:var(--accent2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.15);">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
@@ -1149,7 +1152,11 @@ body { font-family: 'Poppins', 'Segoe UI', 'Noto Sans', Roboto, 'Arial Unicode M
       <!-- Sports & Batches — Admin only (unified, nested) -->
       <div class="card admin-only" id="sportBatchCard">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-          <div class="section-title" style="margin-bottom:0;font-size:13px;">🏆 Sports & Batches</div>
+          <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+            <div class="section-title" style="margin-bottom:0;font-size:13px;">🏆 Sports & Batches</div>
+            <div id="sportLimitBadge"></div>
+            <div id="batchLimitBadge"></div>
+          </div>
           <button class="btn btn-primary btn-xs" onclick="openAddSportModal()">+ Sport</button>
         </div>
         <div id="sportBatchWrap"></div>
@@ -1161,7 +1168,10 @@ body { font-family: 'Poppins', 'Segoe UI', 'Noto Sans', Roboto, 'Arial Unicode M
       <!-- User Management — Admin only -->
       <div class="card" id="userCard">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-          <div class="section-title" style="margin-bottom:0;font-size:12px;" id="userCardTitle">🔑 User Management</div>
+          <div style="display:flex;align-items:center;gap:7px;">
+            <div class="section-title" style="margin-bottom:0;font-size:12px;" id="userCardTitle">🔑 User Management</div>
+            <div id="staffLimitBadge"></div>
+          </div>
           <button class="btn btn-primary btn-xs admin-only" onclick="openAddUserModal('staff')">+ Add Staff</button>
         </div>
         <div id="userListWrap"></div>
@@ -1227,8 +1237,8 @@ body { font-family: 'Poppins', 'Segoe UI', 'Noto Sans', Roboto, 'Arial Unicode M
           <div class="section-title" style="margin-bottom:0;font-size:12px;">💰 Fees Log</div>
           <div style="display:flex;gap:5px;align-items:center;">
             <button class="btn btn-xs btn-outline" id="feeCatBtn" onclick="toggleFeeCatMenu()">🔽 Type</button>
-            <button class="btn btn-xs btn-gold" onclick="exportFeesLog('pdf')">PDF</button>
-            <button class="btn btn-xs btn-success" onclick="exportFeesLog('xl')">XL</button>
+            <button class="btn btn-xs btn-gold" onclick="gatedFeature('reports','exportFeesLog',['pdf'])">PDF</button>
+            <button class="btn btn-xs btn-success" onclick="gatedFeature('reports','exportFeesLog',['xl'])">XL</button>
           </div>
         </div>
         <div id="feeCatMenu" class="cat-menu" style="display:none;"></div>
@@ -1894,8 +1904,8 @@ body { font-family: 'Poppins', 'Segoe UI', 'Noto Sans', Roboto, 'Arial Unicode M
       <textarea class="form-input" id="sendMsgText" rows="5" style="resize:none;line-height:1.7;"></textarea>
     </div>
     <div style="display:flex;gap:8px;margin-top:4px;">
-      <button class="btn btn-outline btn-sm" style="flex:1;" onclick="sendFeeMsg('sms')" id="btnSendSMS">📱 SMS</button>
-      <button class="btn btn-success btn-sm" style="flex:2;" onclick="sendFeeMsg('whatsapp')" id="btnSendWhatsApp">💬 WhatsApp</button>
+      <button class="btn btn-outline btn-sm" style="flex:1;" onclick="gatedFeature('whatsapp','sendFeeMsg',['sms'])" id="btnSendSMS">📱 SMS</button>
+      <button class="btn btn-success btn-sm" style="flex:2;" onclick="gatedFeature('whatsapp','sendFeeMsg',['whatsapp'])" id="btnSendWhatsApp">💬 WhatsApp</button>
     </div>
   </div>
 </div>
@@ -2831,12 +2841,85 @@ function enqFullDate(iso) {
 }
 
 // ================================================================
-// DAILY SNAPSHOTS
 // ================================================================
+// DAILY SNAPSHOTS — with plan-based retention enforcement
+// ================================================================
+// Basic:   7-day retention
+// Pro:    15-day retention
+// Premium: 30-day retention
+// Trial:   7-day retention (same as Basic)
+// ================================================================
+
+// ── Plan limits ──────────────────────────────────────────────────
+const SNAP_LIMITS = { basic:7, pro:15, premium:30, trial:7, frozen:7 };
+
+function snapGetLimit() {
+  const plan = (DB.settings && DB.settings.plan) || 'trial';
+  return SNAP_LIMITS[plan] || 7;
+}
+
+function snapGetPlanName() {
+  const plan = (DB.settings && DB.settings.plan) || 'trial';
+  return plan.charAt(0).toUpperCase() + plan.slice(1);
+}
+
 function snapDateKey(d) {
   d = d || new Date();
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
+
+// Returns cutoff date key — snapshots older than this are beyond the plan limit
+function snapCutoffKey() {
+  const d = new Date();
+  d.setDate(d.getDate() - snapGetLimit());
+  return snapDateKey(d);
+}
+
+// ── Auto-purge snapshots beyond the plan retention limit ─────────
+async function snapPurgeOld() {
+  try {
+    const cutoff = snapCutoffKey();
+    const aid    = acadId();
+    if (!aid) return;
+
+    // Get all snapshots older than cutoff
+    const { data: old } = await sb().from('snapshots')
+      .select('snap_key')
+      .eq('academy_id', aid)
+      .lt('snap_key', cutoff);  // snap_key is YYYY-MM-DD so string compare works
+
+    if (!old || !old.length) return;
+
+    // Delete them
+    const keys = old.map(s => s.snap_key);
+    await sb().from('snapshots')
+      .delete()
+      .eq('academy_id', aid)
+      .in('snap_key', keys);
+
+    // Update local index
+    DB.snapshotIndex = (DB.snapshotIndex || []).filter(s => s.key >= cutoff);
+
+    console.log(`Purged ${keys.length} snapshot(s) beyond ${snapGetPlanName()} plan limit (${snapGetLimit()} days)`);
+  } catch(e) {
+    console.warn('snapPurgeOld failed:', e);
+  }
+}
+
+// ── Count snapshots within the allowed window ────────────────────
+async function snapCountWithinLimit() {
+  try {
+    const cutoff = snapCutoffKey();
+    const aid    = acadId();
+    const { count } = await sb().from('snapshots')
+      .select('snap_key', { count: 'exact', head: true })
+      .eq('academy_id', aid)
+      .gte('snap_key', cutoff);
+    return count || 0;
+  } catch(e) { return 0; }
+}
+
+// ── Take a snapshot ──────────────────────────────────────────────
 async function takeSnapshot(label) {
   try {
     const key  = snapDateKey();
@@ -2845,67 +2928,122 @@ async function takeSnapshot(label) {
     snap._snapLabel = label || 'auto';
     snap._snapTime  = new Date().toISOString();
     snap._snapKey   = key;
+
     await sbAddSnapshot(key, snap._snapLabel, snap);
+
     if (!Array.isArray(DB.snapshotIndex)) DB.snapshotIndex = [];
     const existing = DB.snapshotIndex.find(s => s.key === key);
     if (existing) { existing.time = snap._snapTime; existing.label = snap._snapLabel; }
-    else DB.snapshotIndex.unshift({ key, time:snap._snapTime, label:snap._snapLabel });
-    DB.snapshotIndex = DB.snapshotIndex.slice(0,30);
+    else DB.snapshotIndex.unshift({ key, time: snap._snapTime, label: snap._snapLabel });
+
+    // Keep local index within limit
+    DB.snapshotIndex = DB.snapshotIndex.slice(0, snapGetLimit());
+
+    // Purge old snapshots beyond plan retention (runs in background)
+    snapPurgeOld().catch(()=>{});
+
     renderSnapshotList();
     return key;
-  } catch(e) { console.error('Snapshot failed:',e); return null; }
+  } catch(e) { console.error('Snapshot failed:', e); return null; }
 }
+
+// ── Manual snapshot (triggered by user) ─────────────────────────
+function takeSnapshotNow() {
+  const limit = snapGetLimit();
+  const plan  = snapGetPlanName();
+
+  confirm_('📸', 'Take Snapshot',
+    `Save a snapshot of all current data?\n\nYour ${plan} plan keeps snapshots for ${limit} days.`,
+    async () => {
+      const key = await takeSnapshot('manual');
+      if (key) {
+        showToast('📸 Snapshot saved: ' + key, 'success');
+        addLog('snapshot', 'Manual snapshot: ' + key);
+        await renderSnapshotList();
+      } else {
+        showToast('Snapshot failed', 'error');
+      }
+    }
+  );
+}
+
+// ── Auto-snapshot at midnight ────────────────────────────────────
 function checkMidnightSnapshot() {
   if (!currentUser || !isAdmin()) return;
   const todayKey = snapDateKey();
   const done = Array.isArray(DB.snapshotIndex) && DB.snapshotIndex.some(s => s.key === todayKey);
   if (!done) {
     takeSnapshot('auto').then(key => {
-      if (key) { showToast('📸 Daily snapshot saved', 'success'); addLog('snapshot','Auto snapshot: '+key); }
+      if (key) { showToast('📸 Daily snapshot saved', 'success'); addLog('snapshot', 'Auto snapshot: ' + key); }
     });
   }
+  // Always purge old ones at midnight check
+  snapPurgeOld().catch(()=>{});
 }
-function takeSnapshotNow() {
-  confirm_('📸','Take Snapshot','Save a snapshot of all current data?', async () => {
-    const key = await takeSnapshot('manual');
-    if (key) {
-      showToast('📸 Snapshot saved: '+key,'success');
-      addLog('snapshot','Manual snapshot: '+key);
-      await renderSnapshotList();
-    } else {
-      showToast('Snapshot failed','error');
-    }
-  });
-}
+
+// ── Render snapshot list ─────────────────────────────────────────
 async function renderSnapshotList() {
   const wrap = document.getElementById('snapshotListWrap');
   if (!wrap) return;
 
-  // Fetch the live snapshot list from Supabase
-  let list = [];
+  const limit   = snapGetLimit();
+  const plan    = snapGetPlanName();
+  const cutoff  = snapCutoffKey();
+
   wrap.innerHTML = '<div class="empty-state" style="padding:14px;">🔄 Loading snapshots…</div>';
+
+  let list = [];
   try {
     const aid = acadId();
     const { data, error } = await sb().from('snapshots')
-      .select('snap_key,label,created_at').eq('academy_id', aid)
+      .select('snap_key,label,created_at')
+      .eq('academy_id', aid)
+      .gte('snap_key', cutoff)           // only show snapshots within plan window
       .order('created_at', { ascending: false });
     if (error) throw error;
     list = (data || []).map(s => ({ key: s.snap_key, time: s.created_at, label: s.label || 'auto' }));
     DB.snapshotIndex = list.map(s => ({ key: s.key, time: s.time, label: s.label }));
-  } catch (e) {
-    list = Array.isArray(DB.snapshotIndex) ? [...DB.snapshotIndex].sort((a,b) => b.key.localeCompare(a.key)) : [];
+  } catch(e) {
+    const fallback = Array.isArray(DB.snapshotIndex) ? [...DB.snapshotIndex] : [];
+    list = fallback
+      .filter(s => s.key >= cutoff)
+      .sort((a,b) => b.key.localeCompare(a.key));
   }
 
+  // ── Plan retention badge ──────────────────────────────────────
+  const nextPlan    = plan === 'Basic' ? 'Pro (15 days)' : plan === 'Pro' ? 'Premium (30 days)' : null;
+  const upgradeLine = nextPlan
+    ? `<div style="font-size:11px;color:#f59e0b;padding:6px 12px 0;display:flex;align-items:center;gap:6px;">
+        <i class="ti ti-arrow-up-circle"></i>
+        Upgrade to ${nextPlan} for longer history
+       </div>`
+    : '';
+
+  const limitBadge = `
+    <div style="display:flex;align-items:center;justify-content:space-between;
+                padding:8px 12px;background:var(--card2);border-radius:8px;margin-bottom:8px;">
+      <div style="font-size:12px;color:var(--gray);">
+        <span style="color:var(--accent2);font-weight:700;">${plan} plan</span>
+        &nbsp;·&nbsp; ${limit}-day history
+      </div>
+      <div style="font-size:11px;color:var(--gray);">
+        ${list.length} snapshot${list.length !== 1 ? 's' : ''}
+      </div>
+    </div>
+    ${upgradeLine}`;
+
   if (!list.length) {
-    wrap.innerHTML = '<div class="empty-state" style="padding:14px;">No snapshots yet. Tap 📸 Snap Now to create one.</div>';
+    wrap.innerHTML = limitBadge +
+      '<div class="empty-state" style="padding:14px;">No snapshots yet within your ' + limit + '-day window.<br>Tap 📸 Snap Now to create one.</div>';
     return;
   }
-  wrap.innerHTML = list.map(s => {
+
+  wrap.innerHTML = limitBadge + list.map(s => {
     const d   = new Date(s.time);
     const lbl = s.label === 'manual' ? '🖐 Manual' : '🕛 Auto';
     const col = s.label === 'manual' ? 'var(--accent2)' : 'var(--gold)';
-    const ts  = d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+
-                ' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    const ts  = d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) +
+                ' ' + d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
     return `<div style="display:flex;align-items:center;justify-content:space-between;
                         padding:10px 12px;border-bottom:1px solid var(--border);gap:8px;">
       <div style="flex:1;min-width:0;">
@@ -2923,9 +3061,16 @@ async function renderSnapshotList() {
     </div>`;
   }).join('');
 }
+
+// ── Restore a snapshot ───────────────────────────────────────────
 function restoreSnapshot(key) {
-  confirm_('⚠️','Restore Snapshot',
-    'Restore ALL data from '+key+'? Current data will be overwritten.',
+  const cutoff = snapCutoffKey();
+  if (key < cutoff) {
+    showToast('This snapshot is outside your ' + snapGetPlanName() + ' plan window', 'error');
+    return;
+  }
+  confirm_('⚠️', 'Restore Snapshot',
+    'Restore ALL data from ' + key + '? Current data will be overwritten.',
     async () => {
       try {
         const aid = acadId();
@@ -2933,53 +3078,51 @@ function restoreSnapshot(key) {
           .select('data').eq('academy_id', aid).eq('snap_key', key).single();
         if (error) throw error;
         const data = row && row.data;
-        if (!data) { showToast('Snapshot not found','error'); return; }
-        const savedIndex  = Array.isArray(DB.snapshotIndex) ? [...DB.snapshotIndex] : [];
+        if (!data) { showToast('Snapshot not found', 'error'); return; }
+        const savedIndex = Array.isArray(DB.snapshotIndex) ? [...DB.snapshotIndex] : [];
         DB = ensureArrays(data);
         DB.snapshotIndex = savedIndex;
-        // Write the restored data back to all Supabase tables
         await sbPushFullDB();
         refreshCurrentPage();
-        showToast('✅ Restored from '+key,'success');
-        addLog('snapshot','Restored from snapshot '+key);
-      } catch(e) { showToast('Restore failed: '+e.message,'error'); }
+        showToast('✅ Restored from ' + key, 'success');
+        addLog('snapshot', 'Restored from snapshot ' + key);
+      } catch(e) { showToast('Restore failed: ' + e.message, 'error'); }
     });
 }
 
+// ── Delete a snapshot ────────────────────────────────────────────
 function deleteSnapshot(key) {
-  confirm_('🗑️','Delete Snapshot',
-    'Delete snapshot '+key+'? This cannot be undone.',
+  confirm_('🗑️', 'Delete Snapshot',
+    'Delete snapshot ' + key + '? This cannot be undone.',
     async () => {
       try {
         await sbDeleteSnapshot(key);
         DB.snapshotIndex = (DB.snapshotIndex || []).filter(s => s.key !== key);
         renderSnapshotList();
-        addLog('snapshot','Deleted snapshot '+key);
-        showToast('Snapshot deleted ✓','success');
-      } catch(e) { showToast('Delete failed: '+e.message,'error'); }
+        addLog('snapshot', 'Deleted snapshot ' + key);
+        showToast('Snapshot deleted ✓', 'success');
+      } catch(e) { showToast('Delete failed: ' + e.message, 'error'); }
     });
 }
 
+// ── ensureArrays (shared utility) ───────────────────────────────
 function ensureArrays(db) {
-  // Guarantee top-level keys always exist so nothing can crash reading them
-  if (!db.settings   || typeof db.settings !== 'object') db.settings   = {};
+  if (!db.settings   || typeof db.settings   !== 'object') db.settings   = {};
   if (!db.attendance || typeof db.attendance !== 'object') db.attendance = {};
-  if (!db.fees       || typeof db.fees !== 'object')      db.fees       = {};
-
-  // Firebase sometimes converts arrays to objects {0:{}, 1:{}} — fix them back
+  if (!db.fees       || typeof db.fees       !== 'object') db.fees       = {};
   ['users','batches','students','changelog','enquiries','snapshotIndex','msgLogs','classLog'].forEach(key => {
     if (!db[key]) {
-      db[key] = [];  // missing key → safe empty array
+      db[key] = [];
     } else if (!Array.isArray(db[key]) && typeof db[key] === 'object') {
-      db[key] = Object.values(db[key]);  // Firebase object-array → real array
+      db[key] = Object.values(db[key]);
     }
-    // Remove any null/undefined entries Firebase may have left behind
     if (Array.isArray(db[key])) {
       db[key] = db[key].filter(item => item !== null && item !== undefined);
     }
   });
   return db;
 }
+
 
 // ----------------------------------------------------------------
 // HELPERS
@@ -3682,9 +3825,39 @@ function doLogout() {
   });
 }
 function applyRoleUI() {
+  // Role-based: admin-only elements
   document.querySelectorAll('.admin-only').forEach(el => {
     el.style.display = isAdmin() ? '' : 'none';
   });
+
+  // Plan-based: Pro+ tabs (enquiry, activity, performance, schedules)
+  const plan    = (DB.settings && DB.settings.plan) || 'trial';
+  const isPro   = ['pro','premium'].includes(plan);
+  const isPrem  = plan === 'premium';
+
+  // Enquiry tab — Pro+
+  const enqNav  = document.getElementById('tnav-enquiry');
+  if (enqNav)  enqNav.style.display  = isPro ? '' : 'none';
+
+  // Activity tab — Pro+
+  const actNav  = document.getElementById('tnav-activity');
+  if (actNav)  actNav.style.display  = isPro ? '' : 'none';
+
+  // Performance tab — Pro+
+  const perfNav = document.getElementById('tnav-performance');
+  if (perfNav) perfNav.style.display = isPro ? '' : 'none';
+
+  // Schedules tab — Premium only
+  const schedNav = document.getElementById('tnav-schedules');
+  if (schedNav) schedNav.style.display = isPrem ? '' : 'none';
+
+  // If current page is a locked tab, redirect to home
+  if (!isPro && ['enquiry','activity','performance'].includes(currentPage)) {
+    switchPage('home');
+  }
+  if (!isPrem && currentPage === 'schedules') {
+    switchPage('home');
+  }
 }
 
 // hasLoadedRemote: set true once the initial Supabase load completes.
@@ -3717,7 +3890,11 @@ async function loadAllData() {
       sb().from('fees').select('*').eq('academy_id', aid),
       sb().from('enquiries').select('*').eq('academy_id', aid),
       sb().from('class_log').select('*').eq('academy_id', aid),
-      sb().from('audit_log').select('*').eq('academy_id', aid).order('created_at', { ascending: false }).limit(500),
+      // Fetch audit_log within plan retention window (3/6/9 months)
+      // plan not loaded yet at this point so use a safe 270-day max; filtered again on render
+      sb().from('audit_log').select('*').eq('academy_id', aid)
+        .gte('created_at', new Date(Date.now() - 270*24*60*60*1000).toISOString())
+        .order('created_at', { ascending: false }).limit(1000),
       sb().from('msg_logs').select('*').eq('academy_id', aid).order('sent_at', { ascending: false }).limit(200),
       sb().from('snapshots').select('snap_key,label,created_at').eq('academy_id', aid).order('created_at', { ascending: false }),
       sb().from('sports').select('*').eq('academy_id', aid).order('sort_order'),
@@ -3732,8 +3909,26 @@ async function loadAllData() {
       academyName: a.name || '', logoUrl: a.logo_url || '', email: a.email || '',
       phone: a.phone || '', phone2: a.phone2 || '', tagline: a.tagline || '', loginBgUrl: a.login_bg_url || '',
       loginSupport: a.login_support || '', msgTemplate: a.msg_template || DB.settings.msgTemplate,
-      thankTemplate: a.thank_template || DB.settings.thankTemplate
+      thankTemplate: a.thank_template || DB.settings.thankTemplate,
+      plan: a.plan || 'trial', trialEndsAt: a.trial_ends_at || null, planEndsAt: a.plan_ends_at || null,
     };
+    // Now that plan is known, trim changelog to plan retention window
+    // and schedule async cleanup of old audit_log rows in Supabase
+    const _retMs = { basic:90, pro:180, premium:270, trial:90, frozen:90 }[a.plan||'trial'] || 90;
+    const _retMs2 = _retMs * 24 * 60 * 60 * 1000;
+    const _cutoffISO = new Date(Date.now() - _retMs2).toISOString();
+    if (Array.isArray(DB.changelog)) {
+      DB.changelog = DB.changelog.filter(c => c.time >= _cutoffISO);
+    }
+    // Background purge: delete audit_log rows older than retention
+    if (typeof sb === 'function') {
+      sb().from('audit_log')
+        .delete()
+        .eq('academy_id', aid)
+        .lt('created_at', _cutoffISO)
+        .then(() => {})
+        .catch(() => {});
+    }
     // Keep localStorage in sync so logo survives refresh even before Supabase loads
     try {
       const lk = 'fezo_logo_' + (acadId()||'local');
@@ -4611,6 +4806,24 @@ function switchPage(name, noAnim) {
   if (name === 'attendance') { populateAttSportSelect(); renderAttendance(); }
   if (name === 'fees') { populateFeeSportSelect(); renderFees(); }
   if (name === 'enquiry') renderEnquiryList();
+  // Plan gate — redirect to home if tab is locked for this plan
+  const _plan    = (DB.settings && DB.settings.plan) || 'trial';
+  const _isPro   = ['pro','premium'].includes(_plan);
+  const _isPrem  = _plan === 'premium';
+  const _proTabs = ['enquiry','activity','performance'];
+  const _premTabs = ['schedules'];
+
+  if (_proTabs.includes(name) && !_isPro) {
+    showToast('Enquiry, Activity & Performance are available on Pro plan. Upgrade to unlock.', 'error');
+    setTimeout(() => { if (typeof fzOpenPlans === 'function') fzOpenPlans(); }, 800);
+    return;
+  }
+  if (_premTabs.includes(name) && !_isPrem) {
+    showToast('Staff Schedules are available on Premium plan. Upgrade to unlock.', 'error');
+    setTimeout(() => { if (typeof fzOpenPlans === 'function') fzOpenPlans(); }, 800);
+    return;
+  }
+
   if (name === 'activity') renderActivityPage();
   if (name === 'performance') renderPerformancePage();
   if (name === 'schedules') renderSchedulesPage();
@@ -4884,11 +5097,71 @@ function renderEnrollRows() {
       <button type="button" class="btn btn-danger btn-xs" onclick="removeEnrollRow(${i})">✕</button>
     </div>`).join('');
 }
+// ── Plan-based feature limits ────────────────────────────────────
+// Returns log retention in days per plan
+function planLogRetentionDays() {
+  const plan = (DB.settings && DB.settings.plan) || 'trial';
+  return { basic:90, pro:180, premium:270, trial:90, frozen:90 }[plan] || 90;
+}
+function planLogCutoff() {
+  const d = new Date();
+  d.setDate(d.getDate() - planLogRetentionDays());
+  return d.toISOString();
+}
+function planLogRetentionLabel() {
+  return Math.round(planLogRetentionDays()/30) + ' months';
+}
+
+function planStudentLimit() {
+  const plan = (DB.settings && DB.settings.plan) || 'trial';
+  return {basic:50, pro:250, premium:null, trial:50, frozen:0}[plan] ?? 50;
+}
+function planStaffLimit() {
+  const plan = (DB.settings && DB.settings.plan) || 'trial';
+  return {basic:2, pro:4, premium:20, trial:2, frozen:0}[plan] ?? 2;
+}
+function planSportLimit() {
+  const plan = (DB.settings && DB.settings.plan) || 'trial';
+  return {basic:2, pro:10, premium:20, trial:2, frozen:0}[plan] ?? 2;
+}
+function planBatchLimit() {
+  // Total batch limit = sports × batches per sport
+  const plan = (DB.settings && DB.settings.plan) || 'trial';
+  return {basic:4, pro:100, premium:400, trial:4, frozen:0}[plan] ?? 4;
+}
+// Batches per sport limit
+function planBatchesPerSport() {
+  const plan = (DB.settings && DB.settings.plan) || 'trial';
+  return {basic:2, pro:10, premium:20, trial:2, frozen:0}[plan] ?? 2;
+}
+function planDisplayName() {
+  const plan = (DB.settings && DB.settings.plan) || 'trial';
+  return {basic:'Basic',pro:'Pro',premium:'Premium',trial:'Trial',frozen:'Frozen'}[plan] || 'Basic';
+}
+function showPlanLimitToast(feature, limit, upgrade) {
+  showToast(`${planDisplayName()} plan limit reached: ${limit} ${feature}. Upgrade to ${upgrade} for more.`, 'error');
+}
+
 function saveStudent() {
   const name = document.getElementById('sName').value.trim();
   if (!name) { showToast('Name is required','error'); return; }
   // Sport is mandatory — student must have at least one enrollment
   if (!_formEnrollments.length) { showToast('Please add at least one Sport for this student','error'); return; }
+
+  // ── Plan student limit check ──────────────────────────────────
+  if (!editStudId) {
+    const limit = planStudentLimit();
+    if (limit !== null) {
+      const active = (DB.students||[]).filter(s=>!s.banned&&!s.archived).length;
+      if (active >= limit) {
+        const nextPlan = limit<=50 ? 'Pro (250 students)' : 'Premium (unlimited)';
+        showPlanLimitToast('students', limit, nextPlan);
+        setTimeout(()=>{ if(typeof fzOpenPlans==='function') fzOpenPlans(); }, 1000);
+        return;
+      }
+    }
+  }
+
   // Batch is mandatory — every enrollment row must have a batch selected
   const missingBatch = _formEnrollments.find(e => !e.batch);
   if (missingBatch) { showToast(`Please select a Batch for ${missingBatch.sport}`,'error'); return; }
@@ -6054,6 +6327,25 @@ function renderStudentList() {
   populateStudentBatchFilter();
   populateStudentSportFilter();
 
+  // ── Student count badge ──────────────────────────────────────
+  const badge = document.getElementById('studentLimitBadge');
+  if (badge) {
+    const limit   = (typeof planStudentLimit === 'function') ? planStudentLimit() : null;
+    const active  = (DB.students||[]).filter(s=>!s.banned&&!s.archived).length;
+    if (limit === null) {
+      badge.textContent = active + ' students';
+      badge.style.background = 'var(--card2)';
+      badge.style.color = 'var(--gray)';
+    } else {
+      const pct  = active / limit;
+      const near = pct >= 0.8;
+      const full = active >= limit;
+      badge.textContent = active + ' / ' + limit;
+      badge.style.background = full ? 'rgba(232,57,47,.15)' : near ? 'rgba(245,158,11,.15)' : 'var(--card2)';
+      badge.style.color      = full ? '#e8392f'             : near ? '#f59e0b'              : 'var(--gray)';
+    }
+  }
+
   const search       = (document.getElementById('studentSearch')?.value || '').toLowerCase().trim();
   const filterBatch  = document.getElementById('filterStudentBatch')?.value || '';
   const filterSport  = document.getElementById('studentSportFilter')?.value || '';
@@ -6346,8 +6638,13 @@ function initAttFilters() {
   const ySel = document.getElementById('attYear');
   const mSel = document.getElementById('attMonth');
   if (!ySel) return;
+  // Plan-based history limit
+  const plan = (DB.settings && DB.settings.plan) || 'trial';
+  const histYears = plan === 'premium' ? 10 : plan === 'pro' ? 1 : 0;
+  // histYears=0 means same year only (3 months back handled via month limit)
+  const minYear = now.getFullYear() - histYears;
   ySel.innerHTML = '';
-  for (let y = now.getFullYear()-10; y <= now.getFullYear()+10; y++)
+  for (let y = minYear; y <= now.getFullYear()+1; y++)
     ySel.innerHTML += `<option${y===now.getFullYear()?' selected':''}>${y}</option>`;
   mSel.innerHTML = MONTHS.map((m,i) => `<option value="${i+1}"${i===now.getMonth()?' selected':''}>${m}</option>`).join('');
   updateDateOptions();
@@ -6966,10 +7263,14 @@ function initFeeFilters() {
   const mSel  = document.getElementById('feeMonth');
   const yoSel = document.getElementById('feeYearOnly');
   if (!ySel) return;
+  // Plan-based history limit
+  const plan = (DB.settings && DB.settings.plan) || 'trial';
+  const histYears = plan === 'premium' ? 10 : plan === 'pro' ? 1 : 0;
+  const minYear = now.getFullYear() - histYears;
   [ySel, yoSel].forEach(sel => {
     if (!sel) return;
     sel.innerHTML = '';
-    for (let y = now.getFullYear()-10; y <= now.getFullYear()+10; y++)
+    for (let y = minYear; y <= now.getFullYear()+1; y++)
       sel.innerHTML += `<option${y===now.getFullYear()?' selected':''}>${y}</option>`;
   });
   if (mSel) mSel.innerHTML = MONTHS.map((mn,i) =>
@@ -9200,6 +9501,28 @@ function toggleSportCollapse(sp) {
   renderSportBatch();
 }
 function renderSportBatch() {
+  // Update sport/batch count badges
+  const sportBadge = document.getElementById('sportLimitBadge');
+  const batchBadge = document.getElementById('batchLimitBadge');
+  if (sportBadge && typeof planSportLimit === 'function') {
+    const lim = planSportLimit();
+    const cur = (DB.sports||[]).length;
+    if (lim === null) { sportBadge.textContent = cur+' sports'; sportBadge.style.cssText='font-size:11px;font-weight:600;padding:2px 9px;border-radius:12px;background:var(--card2);color:var(--gray);'; }
+    else {
+      const full = cur >= lim, near = cur/lim >= 0.8;
+      sportBadge.textContent = cur+' / '+lim;
+      sportBadge.style.cssText='font-size:11px;font-weight:600;padding:2px 9px;border-radius:12px;background:'+(full?'rgba(232,57,47,.15)':near?'rgba(245,158,11,.15)':'var(--card2)')+';color:'+(full?'#e8392f':near?'#f59e0b':'var(--gray)')+';';
+    }
+  }
+  if (batchBadge && typeof planBatchesPerSport === 'function') {
+    const perSport = planBatchesPerSport();
+    const cur = (DB.batches||[]).length;
+    const sportCount = (DB.sports||[]).length;
+    const totalLim = perSport * sportCount;
+    const full = cur >= totalLim, near = totalLim > 0 && cur/totalLim >= 0.8;
+    batchBadge.textContent = cur+' batches · '+perSport+'/sport';
+    batchBadge.style.cssText='font-size:11px;font-weight:600;padding:2px 9px;border-radius:12px;background:'+(full?'rgba(232,57,47,.15)':near?'rgba(245,158,11,.15)':'var(--card2)')+';color:'+(full?'#e8392f':near?'#f59e0b':'var(--gray)')+';';
+  }
   const wrap = document.getElementById('sportBatchWrap');
   if (!wrap) return;
   if (!Array.isArray(DB.sports)) DB.sports = [];
@@ -9385,6 +9708,15 @@ function saveNewSport() {
   const name = document.getElementById('newSportName').value.trim();
   if (!name) { showToast('Enter a sport name','error'); return; }
   if (!Array.isArray(DB.sports)) DB.sports = [];
+
+  // ── Plan sport limit check ──────────────────────────────────
+  const sportLimit = (typeof planSportLimit === 'function') ? planSportLimit() : 1;
+  if (sportLimit !== null && DB.sports.length >= sportLimit) {
+    const nextPlan = sportLimit <= 2 ? 'Pro (10 sports)' : sportLimit <= 10 ? 'Premium (20 sports)' : 'Premium';
+    showPlanLimitToast('sports', sportLimit, nextPlan);
+    setTimeout(() => { if (typeof fzOpenPlans === 'function') fzOpenPlans(); }, 800);
+    return;
+  }
   if (DB.sports.length >= 20) { showToast('Max 20 sports reached','error'); return; }
   if (DB.sports.some(s => s.toLowerCase() === name.toLowerCase())) { showToast('Sport already exists','error'); return; }
   confirm_('➕','Add Sport',`Add sport "${name}"?`, () => {
@@ -9493,12 +9825,43 @@ function openAddBatchModal() {
   openModal('modalAddBatch');
 }
 function saveNewBatch() {
-  const name = document.getElementById('newBatchName').value.trim();
+  const name  = document.getElementById('newBatchName').value.trim();
   const sport = document.getElementById('newBatchSport')?.value || '';
-  if (!name) { showToast('Enter a batch name','error'); return; }
-  if (DB.batches.length >= 15) { showToast('Max 15 batches reached','error'); return; }
-  if (DB.batches.includes(name)) { showToast('Batch already exists','error'); return; }
+  if (!name)  { showToast('Enter a batch name','error'); return; }
+
+  // ── Plan batch limit check ──────────────────────────────────
   if (!sport) { showToast('Add a sport first, then assign the batch to it','error'); return; }
+
+  const perSportLimit = (typeof planBatchesPerSport === 'function') ? planBatchesPerSport() : 2;
+  const totalLimit    = (typeof planBatchLimit      === 'function') ? planBatchLimit()      : 4;
+  const plan          = (DB.settings && DB.settings.plan) || 'trial';
+
+  // Check batches already assigned to this specific sport
+  const batchesForThisSport = (DB.batches || []).filter(b =>
+    DB.batchSport && DB.batchSport[b] === sport
+  ).length;
+
+  if (batchesForThisSport >= perSportLimit) {
+    const nextPlan = plan === 'basic' ? 'Pro (10 batches per sport)' : 'Premium (20 batches per sport)';
+    showToast(
+      (typeof planDisplayName==='function'?planDisplayName():'Basic') +
+      ' plan: max ' + perSportLimit + ' batches per sport. Upgrade to ' + nextPlan + '.',
+      'error'
+    );
+    setTimeout(() => { if (typeof fzOpenPlans === 'function') fzOpenPlans(); }, 800);
+    return;
+  }
+
+  // Also check total batch limit
+  if (totalLimit !== null && (DB.batches||[]).length >= totalLimit) {
+    const nextPlan = plan === 'basic' ? 'Pro (100 total batches)' : 'Premium (400 total batches)';
+    showPlanLimitToast('total batches', totalLimit, nextPlan);
+    setTimeout(() => { if (typeof fzOpenPlans === 'function') fzOpenPlans(); }, 800);
+    return;
+  }
+
+  if (DB.batches.length >= 400) { showToast('Maximum batches reached','error'); return; }
+  if (DB.batches.includes(name)) { showToast('Batch already exists','error'); return; }
   confirm_('➕','Add Batch',`Add batch "${name}" under sport "${sport}"?`, () => {
     DB.batches.push(name);
     if (!DB.batchSport) DB.batchSport = {};
@@ -9557,6 +9920,26 @@ function renderUserList() {
   const list = admin ? DB.users : DB.users.filter(u => u.id === (currentUser?.id) || u.uid === (currentUser?.uid));
   const titleEl = document.getElementById('userCardTitle');
   if (titleEl) titleEl.textContent = admin ? '🔑 User Management' : '👤 My Profile';
+
+  // ── Staff count badge ──────────────────────────────────────────
+  if (admin && typeof planStaffLimit === 'function') {
+    const limit       = planStaffLimit();
+    const staffCount  = (DB.users||[]).filter(u => u.role === 'staff').length;
+    const badgeEl     = document.getElementById('staffLimitBadge');
+    if (badgeEl) {
+      if (limit === null) {
+        badgeEl.textContent = staffCount + ' staff';
+        badgeEl.style.cssText = 'font-size:11px;font-weight:600;padding:2px 9px;border-radius:12px;background:var(--card2);color:var(--gray);';
+      } else {
+        const near = staffCount / limit >= 0.8;
+        const full = staffCount >= limit;
+        badgeEl.textContent = staffCount + ' / ' + limit + ' staff';
+        badgeEl.style.cssText = 'font-size:11px;font-weight:600;padding:2px 9px;border-radius:12px;'
+          + 'background:' + (full ? 'rgba(232,57,47,.15)' : near ? 'rgba(245,158,11,.15)' : 'var(--card2)') + ';'
+          + 'color:' + (full ? '#e8392f' : near ? '#f59e0b' : 'var(--gray)') + ';';
+      }
+    }
+  }
   list.forEach(u => {
     const batches = Array.isArray(u.assignedBatches) && u.assignedBatches.length > 0
       ? u.assignedBatches.map(b => `<span class="badge badge-blue" style="font-size:10px;">${escHtml(b)}</span>`).join(' ')
@@ -9633,6 +10016,25 @@ async function saveUser() {
 
   if (errEl) errEl.style.display = 'none';
   if (!email) { showToast('Email is required','error'); return; }
+
+  // ── Plan staff limit check (only for new staff, not edits) ──────
+  if (!eid && role === 'staff') {
+    const limit = (typeof planStaffLimit === 'function') ? planStaffLimit() : 2;
+    if (limit !== null) {
+      const currentStaff = (DB.users||[]).filter(u => u.role === 'staff').length;
+      if (currentStaff >= limit) {
+        const nextPlan = limit <= 2 ? 'Pro (4 staff)' : limit <= 4 ? 'Premium (20 staff)' : 'Premium';
+        if (errEl) {
+          errEl.textContent = (typeof planDisplayName==='function' ? planDisplayName() : 'Basic')
+            + ' plan limit: ' + limit + ' staff members. Upgrade to ' + nextPlan + '.';
+          errEl.style.display = '';
+        }
+        showToast('Staff limit reached. Upgrade your plan to add more.', 'error');
+        setTimeout(() => { if (typeof fzOpenPlans === 'function') fzOpenPlans(); }, 1000);
+        return;
+      }
+    }
+  }
 
   // For new users, validate password
   if (!eid) {
@@ -9848,10 +10250,17 @@ function renderChangeLog(tab) {
   if (tab) logTab = tab;
   const el = document.getElementById('changeLogWrap');
   if (!el) return;
-  const all = DB.changelog;
+
+  // Apply plan retention window filter
+  const retDays = (typeof planLogRetentionDays === 'function') ? planLogRetentionDays() : 90;
+  const retLabel = (typeof planLogRetentionLabel === 'function') ? planLogRetentionLabel() : '3 months';
+  const cutoff = new Date(Date.now() - retDays * 24 * 60 * 60 * 1000).toISOString();
+  const planName = (typeof planDisplayName === 'function') ? planDisplayName() : 'Basic';
+  const nextPlan = planName === 'Basic' ? 'Pro (6 months)' : planName === 'Pro' ? 'Premium (9 months)' : null;
+
+  const all = (DB.changelog || []).filter(l => l.time >= cutoff);
   let adminLogs = all.filter(l => l.role === 'admin' || (!l.role && DB.users.find(u=>u.id===l.user)?.role==='admin'));
   let staffLogs = all.filter(l => l.role === 'staff' || (!l.role && DB.users.find(u=>u.id===l.user)?.role==='staff'));
-  // Category filter (empty = all)
   if (_actSelectedCats.length) {
     const f = l => _actSelectedCats.includes(_catOfAction(l.action));
     adminLogs = adminLogs.filter(f);
@@ -9859,20 +10268,28 @@ function renderChangeLog(tab) {
   }
   const show = logTab === 'admin' ? adminLogs : staffLogs;
 
+  // Retention badge
+  const retBadge = `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--card2);border-radius:7px;margin-bottom:8px;font-size:11px;">
+    <span style="color:var(--gray);">
+      <span style="color:var(--accent2);font-weight:700;">${planName}</span> plan · ${retLabel} history
+    </span>
+    ${nextPlan ? `<span style="color:var(--gold);cursor:pointer;" onclick="if(typeof fzOpenPlans==='function')fzOpenPlans()">↑ ${nextPlan}</span>` : ''}
+  </div>`;
+
   const tabHtml = `<div style="display:flex;gap:6px;margin-bottom:8px;">
     <button onclick="renderChangeLog('admin')" style="flex:1;padding:5px;border-radius:7px;border:none;font-size:12px;font-weight:600;cursor:pointer;background:${logTab==='admin'?'var(--accent2)':'var(--card2)'};color:${logTab==='admin'?'#fff':'var(--gray)'};">🔑 Admin (${adminLogs.length})</button>
     <button onclick="renderChangeLog('staff')" style="flex:1;padding:5px;border-radius:7px;border:none;font-size:12px;font-weight:600;cursor:pointer;background:${logTab==='staff'?'var(--accent2)':'var(--card2)'};color:${logTab==='staff'?'#fff':'var(--gray)'};">👤 Staff (${staffLogs.length})</button>
   </div>`;
 
   const rowsHtml = show.length
-    ? show.slice(0,100).map(l =>
+    ? show.slice(0,200).map(l =>
         `<div class="log-row">
           <div style="font-size:12px;">${escHtml(l.action)}: ${escHtml(l.detail)}</div>
           <div class="log-meta">${escHtml(l.user)} · ${new Date(l.time).toLocaleString()}</div>
         </div>`).join('')
-    : `<div style="color:var(--gray);font-size:12px;padding:8px;">No ${logTab} activity yet.</div>`;
+    : `<div style="color:var(--gray);font-size:12px;padding:8px;">No ${logTab} activity in the last ${retLabel}.</div>`;
 
-  el.innerHTML = tabHtml + `<div style="max-height:200px;overflow-y:auto;">${rowsHtml}</div>`;
+  el.innerHTML = retBadge + tabHtml + `<div style="max-height:200px;overflow-y:auto;">${rowsHtml}</div>`;
 }
 
 // ----------------------------------------------------------------
@@ -10044,6 +10461,36 @@ function saveNote() {
 // ----------------------------------------------------------------
 // DOWNLOAD PDF / XL
 // ----------------------------------------------------------------
+// ── Plan feature gate helper ─────────────────────────────────────
+// Checks if the current plan allows a feature. If not, shows upgrade prompt.
+// feature: 'reports' | 'bulk_import' | 'whatsapp'
+function gatedFeature(feature, fnName, args) {
+  const plan = (DB.settings && DB.settings.plan) || 'trial';
+  const proPlans = ['pro', 'premium'];
+  const featureMap = {
+    reports:     { plans: proPlans, label: 'PDF & Excel reports',    upgrade: 'Pro' },
+    bulk_import: { plans: proPlans, label: 'Bulk import / export',   upgrade: 'Pro' },
+    whatsapp:    { plans: proPlans, label: 'WhatsApp reports',        upgrade: 'Pro' },
+    performance: { plans: proPlans, label: 'Performance tracking',   upgrade: 'Pro' },
+    schedules:   { plans: proPlans, label: 'Staff scheduling',        upgrade: 'Premium' },
+  };
+  const gate = featureMap[feature];
+  if (!gate) { window[fnName] && window[fnName](...args); return; }
+  if (gate.plans.includes(plan)) {
+    // Plan allows it — call the function
+    if (typeof window[fnName] === 'function') window[fnName](...args);
+    else { const fn = eval(fnName); if (typeof fn === 'function') fn(...args); }
+    return;
+  }
+  // Plan doesn't allow it — show upgrade toast + open plans modal
+  showToast(
+    (typeof planDisplayName === 'function' ? planDisplayName() : 'Basic') +
+    ' plan doesn't include ' + gate.label + '. Upgrade to ' + gate.upgrade + ' to unlock.',
+    'error'
+  );
+  setTimeout(() => { if (typeof fzOpenPlans === 'function') fzOpenPlans(); }, 800);
+}
+
 function downloadAttendance(fmt) {
   const y = document.getElementById('attYear').value;
   const m = document.getElementById('attMonth').value;
@@ -13746,6 +14193,276 @@ function initNotifSystem() {
 
 /* ============ PLANS MODAL ============ */
 #fzPlansOverlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(7,19,48,.88);
+  z-index:100001;align-items:flex-start;justify-content:center;
+  padding:16px;overflow-y:auto;
+  font-family:'Poppins','Inter',system-ui,sans-serif;
+}
+#fzPlansOverlay.show{display:flex;}
+.fz-plans-modal{
+  background:#fff;border-radius:20px;
+  width:100%;max-width:420px;
+  overflow:hidden;margin:auto;
+  box-shadow:0 24px 64px rgba(0,0,0,.4);
+}
+.fz-plans-top{padding:18px 16px 0;text-align:center;}
+.fz-plans-eyebrow{font-size:10px;font-weight:500;color:#94a3b8;letter-spacing:.6px;margin-bottom:5px;}
+.fz-plans-title{font-size:19px;font-weight:600;color:#0f172a;margin-bottom:3px;}
+.fz-plans-sub{font-size:12px;color:#64748b;margin-bottom:14px;}
+.fz-plans-close{
+  float:right;margin:14px 14px 0 0;
+  width:30px;height:30px;border:none;border-radius:8px;
+  background:#f1f5f9;color:#64748b;font-size:18px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-family:inherit;
+}
+.fz-billing-toggle{
+  display:flex;background:#f1f5f9;border:0.5px solid #e2e8f0;
+  border-radius:10px;padding:3px;margin-bottom:14px;
+}
+.fz-billing-toggle button{
+  flex:1;padding:7px 6px;border:none;border-radius:7px;
+  font-size:12px;font-weight:500;cursor:pointer;
+  background:transparent;color:#64748b;
+  font-family:inherit;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.fz-billing-toggle button.active{
+  background:linear-gradient(90deg,#2563eb,#7c3aed);
+  color:#fff;box-shadow:0 1px 4px rgba(37,99,235,.3);
+}
+.fz-discount{
+  background:rgba(255,255,255,.22);color:rgba(255,255,255,.9);
+  font-size:10px;font-weight:500;padding:1px 6px;border-radius:5px;
+}
+.fz-billing-toggle button:not(.active) .fz-discount{
+  background:#dcfce7;color:#16a34a;
+}
+/* Plan cards */
+.fz-plans-cards{padding:0 12px 12px;}
+.fz-plan-card{
+  border:0.5px solid #e2e8f0;border-radius:12px;
+  margin-bottom:8px;cursor:pointer;
+  background:#f8fafc;overflow:hidden;transition:border-color .15s;
+}
+.fz-plan-card:last-child{margin-bottom:0;}
+.fz-plan-card.featured{border:2px solid #2563eb;}
+.fz-plan-pop{
+  background:linear-gradient(90deg,#2563eb,#7c3aed);
+  color:#fff;font-size:11px;font-weight:500;
+  text-align:center;padding:5px 12px;
+}
+.fz-plan-body{padding:12px;}
+.fz-plan-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px;}
+.fz-plan-left{flex:1;min-width:0;}
+.fz-plan-name{font-size:15px;font-weight:600;color:#0f172a;}
+.fz-plan-tagline{font-size:11px;color:#94a3b8;margin-top:2px;}
+.fz-plan-right{flex-shrink:0;text-align:right;}
+.fz-plan-price-row{display:flex;align-items:baseline;gap:2px;justify-content:flex-end;}
+.fz-plan-price{font-size:21px;font-weight:600;color:#0f172a;white-space:nowrap;}
+.fz-plan-per{font-size:11px;color:#94a3b8;white-space:nowrap;}
+.fz-plan-annual{font-size:11px;color:#64748b;margin-top:2px;text-align:right;display:none;}
+.fz-plan-annual.show{display:block;}
+.fz-plan-save{font-size:11px;font-weight:600;color:#16a34a;margin-top:2px;text-align:right;display:none;}
+.fz-plan-save.show{display:block;}
+.fz-plan-divider{height:0.5px;background:#e2e8f0;margin:9px 0;}
+.fz-plan-feats{display:flex;flex-direction:column;gap:4px;}
+.fz-plan-feat{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:#475569;line-height:1.4;}
+.fz-plan-feat-check{color:#16a34a;font-size:13px;flex-shrink:0;margin-top:1px;}
+.fz-plan-feat-lim{margin-left:auto;font-size:11px;color:#94a3b8;white-space:nowrap;padding-left:6px;flex-shrink:0;}
+/* Footer */
+.fz-plans-foot{padding:12px 14px 16px;border-top:0.5px solid #e2e8f0;background:#f8fafc;}
+.fz-plans-cta{
+  width:100%;padding:13px;
+  background:linear-gradient(90deg,#2563eb,#7c3aed);
+  color:#fff;border:none;border-radius:10px;
+  font-size:14px;font-weight:600;cursor:pointer;
+  font-family:inherit;margin-bottom:7px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 4px 14px rgba(37,99,235,.3);transition:opacity .15s;
+}
+.fz-plans-cta:hover{opacity:.92;}
+.fz-plans-wa{
+  width:100%;padding:10px;background:transparent;
+  color:#475569;border:0.5px solid #cbd5e1;border-radius:10px;
+  font-size:13px;font-weight:500;cursor:pointer;
+  font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px;
+  margin-bottom:14px;transition:background .1s;
+}
+.fz-plans-wa:hover{background:#f1f5f9;}
+.fz-contact-row{
+  border-top:0.5px solid #e2e8f0;padding-top:12px;
+  display:flex;align-items:flex-start;justify-content:space-around;gap:4px;
+}
+.fz-contact-item{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;flex:1;min-width:0;}
+.fz-contact-icon{
+  width:34px;height:34px;background:#fff;
+  border:0.5px solid #e2e8f0;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+}
+.fz-contact-icon i{font-size:16px;color:#64748b;}
+.fz-contact-link{font-size:10px;color:#2563eb;text-decoration:none;font-weight:500;line-height:1.3;word-break:break-all;}
+.fz-contact-sep{width:0.5px;height:40px;background:#e2e8f0;flex-shrink:0;margin-top:5px;}
+.fz-plans-slogan{text-align:center;font-size:11px;color:#94a3b8;margin-top:12px;font-style:italic;}
+
+/* ── Stars ── */
+.fz-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.fz-star-dot{position:absolute;background:#fff;border-radius:50%;animation:fzTwinkle ease-in-out infinite;}
+@keyframes fzTwinkle{0%,100%{opacity:.05;transform:scale(.4);}50%{opacity:.6;transform:scale(1);}}
+
+/* ── Layout ── */
+.fz-frozen-wrap{
+  position:relative;z-index:2;width:100%;max-width:420px;
+  display:flex;flex-direction:column;align-items:center;
+  animation:fzFadeUp .45s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes fzFadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── Reason banner ── */
+.fz-reason-banner{
+  width:100%;margin-bottom:14px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:16px;padding:14px 18px;
+  display:flex;align-items:center;gap:14px;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.fz-reason-icon-wrap{
+  width:40px;height:40px;flex-shrink:0;
+  background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+}
+.fz-reason-banner-text{flex:1;min-width:0;}
+.fz-reason-banner-title{font-size:13px;font-weight:700;color:#f8fafc;margin-bottom:2px;}
+.fz-reason-banner-sub{font-size:11px;color:rgba(255,255,255,.45);line-height:1.4;}
+.fz-reason-banner-sub span{color:#fbbf24;font-weight:700;}
+
+/* ── Status badge ── */
+.fz-frozen-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);
+  color:#fca5a5;font-size:10px;font-weight:800;letter-spacing:1px;
+  padding:5px 14px;border-radius:20px;margin-bottom:14px;text-transform:uppercase;
+}
+.fz-badge-dot{width:6px;height:6px;background:#f87171;border-radius:50%;animation:fzPulse 1.5s ease infinite;}
+@keyframes fzPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
+
+/* ── Main card ── */
+.fz-frozen-card{
+  background:#fff;border-radius:20px;width:100%;overflow:hidden;
+  box-shadow:0 24px 64px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.04);
+}
+
+/* ── Card header ── */
+.fz-frozen-card-top{
+  padding:28px 24px 24px;text-align:center;
+  background:linear-gradient(160deg,#b91c1c 0%,#dc2626 45%,#ef4444 100%);
+  position:relative;overflow:hidden;
+}
+.fz-frozen-card-top::before{
+  content:'';position:absolute;width:300px;height:300px;
+  background:rgba(255,255,255,.05);border-radius:50%;
+  top:-120px;right:-80px;pointer-events:none;
+}
+.fz-frozen-card-top::after{
+  content:'';position:absolute;width:200px;height:200px;
+  background:rgba(0,0,0,.06);border-radius:50%;
+  bottom:-80px;left:-50px;pointer-events:none;
+}
+.fz-frozen-icon-wrap{
+  width:68px;height:68px;
+  background:rgba(255,255,255,.18);
+  border:1.5px solid rgba(255,255,255,.3);
+  border-radius:18px;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;position:relative;z-index:1;
+  box-shadow:0 8px 20px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.25);
+}
+.fz-frozen-emoji{display:none;} /* hidden — use SVG instead */
+.fz-frozen-icon-svg{flex-shrink:0;}
+.fz-frozen-title{
+  font-size:20px;font-weight:800;color:#fff;
+  margin-bottom:8px;line-height:1.25;
+  position:relative;z-index:1;
+  text-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+.fz-frozen-subtitle{
+  font-size:12.5px;color:rgba(255,255,255,.78);
+  line-height:1.6;position:relative;z-index:1;
+  max-width:300px;margin:0 auto;
+}
+
+/* ── Card body ── */
+.fz-frozen-card-body{padding:20px 22px 22px;}
+
+/* ── Data safe strip ── */
+.fz-data-safe{
+  display:flex;align-items:flex-start;gap:10px;
+  background:#f0fdf4;
+  border:1px solid #bbf7d0;border-left:3px solid #22c55e;
+  border-radius:10px;padding:11px 14px;margin-bottom:16px;
+}
+.fz-data-safe-icon{flex-shrink:0;margin-top:1px;}
+.fz-data-safe-text{font-size:12px;color:#15803d;line-height:1.5;}
+.fz-data-safe-text b{font-weight:700;font-size:12.5px;display:block;margin-bottom:2px;color:#166534;}
+
+/* ── Stats ── */
+.fz-frozen-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.fz-frozen-stat-tile{
+  background:#f8fafc;border:1px solid #e2e8f0;
+  border-radius:10px;padding:12px 6px;text-align:center;
+}
+.fz-frozen-stat-val{font-size:20px;font-weight:800;color:#0f172a;line-height:1;}
+.fz-frozen-stat-label{font-size:9px;color:#94a3b8;font-weight:700;margin-top:4px;text-transform:uppercase;letter-spacing:.5px;}
+
+/* ── Divider ── */
+.fz-frozen-divider{
+  font-size:10px;color:#94a3b8;font-weight:800;
+  margin-bottom:12px;letter-spacing:.8px;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;
+}
+.fz-frozen-divider::before,.fz-frozen-divider::after{content:'';flex:1;height:1px;background:#e2e8f0;}
+
+/* ── Buttons ── */
+.fz-frozen-actions{display:flex;flex-direction:column;gap:8px;}
+.fz-frozen-btn-primary{
+  background:linear-gradient(135deg,#dc2626,#b91c1c);
+  color:#fff;padding:15px;border:none;border-radius:12px;
+  font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;
+  width:100%;letter-spacing:.2px;
+  box-shadow:0 4px 16px rgba(220,38,38,.4);
+  transition:transform .15s,box-shadow .15s;
+}
+.fz-frozen-btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(220,38,38,.45);}
+.fz-frozen-btn-primary:active{transform:translateY(0);}
+.fz-frozen-btn-wa{
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  color:#fff;padding:13px;border:none;border-radius:12px;
+  font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:transform .15s,box-shadow .15s;
+  box-shadow:0 4px 12px rgba(34,197,94,.25);
+}
+.fz-frozen-btn-wa:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(34,197,94,.35);}
+.fz-frozen-btn-secondary{
+  background:transparent;color:#64748b;
+  padding:11px;border:1.5px solid #e2e8f0;border-radius:12px;
+  font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;
+  width:100%;transition:all .15s;
+}
+.fz-frozen-btn-secondary:hover{background:#f1f5f9;border-color:#cbd5e1;color:#475569;}
+
+/* ── Footer note ── */
+.fz-frozen-note{
+  margin-top:16px;font-size:11px;color:rgba(255,255,255,.32);
+  text-align:center;line-height:1.8;
+}
+.fz-frozen-note a{color:rgba(255,255,255,.5);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.18);padding-bottom:1px;}
+.fz-frozen-note a:hover{color:rgba(255,255,255,.8);border-color:rgba(255,255,255,.5);}
+
+/* ============ PLANS MODAL ============ */
+#fzPlansOverlay{
   display:none;
   position:fixed;
   inset:0;
@@ -13981,16 +14698,48 @@ function initNotifSystem() {
 <!-- ============ PLANS MODAL ============ -->
 <div id="fzPlansOverlay">
   <div class="fz-plans-modal">
-    <button class="fz-plans-close" onclick="fzClosePlans()">×</button>
-    <div class="fz-plans-hdr">
+
+    <div class="fz-plans-top">
+      <button class="fz-plans-close" onclick="fzClosePlans()">×</button>
+      <div class="fz-plans-eyebrow">UPGRADE YOUR ACADEMY</div>
       <div class="fz-plans-title">Choose your plan</div>
-      <div class="fz-plans-sub">Cancel anytime. All plans include a free trial.</div>
+      <div class="fz-plans-sub">Your data is safe — pick a plan to continue</div>
       <div class="fz-billing-toggle">
         <button id="fzBillMonthly" class="active" onclick="fzSetBilling('monthly')">Monthly</button>
-        <button id="fzBillAnnual" onclick="fzSetBilling('annual')">Annual<span class="fz-discount">SAVE 17%</span></button>
+        <button id="fzBillAnnual" onclick="fzSetBilling('annual')">Annual <span class="fz-discount" id="fzDiscountLabel">SAVE ₹2,989</span></button>
       </div>
     </div>
-    <div class="fz-plans-grid" id="fzPlansGrid"><div style="padding:20px;text-align:center;color:#8a8f9c;font-size:13px;grid-column:1/-1;">Loading plans...</div></div>
+
+    <div class="fz-plans-cards" id="fzPlansGrid"></div>
+
+    <div class="fz-plans-foot">
+      <button class="fz-plans-cta" id="fzPlansCta" onclick="fzCallToActivate()">
+        <i class="ti ti-phone-call"></i>
+        <span id="fzCtaText">Call to activate Pro</span>
+      </button>
+      <button class="fz-plans-wa" onclick="fzSubscribeWhatsApp()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Message us on WhatsApp
+      </button>
+      <div class="fz-contact-row" id="fzContactRow">
+        <div class="fz-contact-item">
+          <div class="fz-contact-icon"><i class="ti ti-phone"></i></div>
+          <a class="fz-contact-link" id="fzPhone1Link" href="#">—</a>
+        </div>
+        <div class="fz-contact-sep"></div>
+        <div class="fz-contact-item">
+          <div class="fz-contact-icon"><i class="ti ti-device-mobile"></i></div>
+          <a class="fz-contact-link" id="fzPhone2Link" href="#">—</a>
+        </div>
+        <div class="fz-contact-sep"></div>
+        <div class="fz-contact-item">
+          <div class="fz-contact-icon"><i class="ti ti-mail"></i></div>
+          <a class="fz-contact-link" id="fzEmailLink" href="#">—</a>
+        </div>
+      </div>
+      <div class="fz-plans-slogan">Manage smarter. Grow faster. FeeZo.</div>
+    </div>
+
   </div>
 </div>
 
@@ -14252,11 +15001,55 @@ function initNotifSystem() {
   }
 
   // ── PLANS MODAL ───────────────────────────────────────────────────
+  let _fzBilling = 'monthly';
+  let _fzSelectedPlan = 'pro';
+
+  // Hardcoded plan data (fallback if DB unavailable)
+  const _fzDefaultPlans = [
+    { code:'basic', name:'Basic', is_recommended:false,
+      tagline:'For small academies just getting started',
+      price_monthly:499, price_annual:4999,
+      features:[
+        {text:'Up to 50 students', lim:'2 staff'},
+        {text:'1 sport · 3 batches'},
+        {text:'Attendance & fee tracking'},
+        {text:'Basic reports'},
+        {text:'7-day data snapshots'},
+      ], ideal:'New academies · single-sport centres'
+    },
+    { code:'pro', name:'Pro', is_recommended:true,
+      tagline:'For growing academies that want to look professional',
+      price_monthly:1499, price_annual:14999,
+      features:[
+        {text:'Everything in Basic', lim:'250 students · 4 staff'},
+        {text:'WhatsApp fee reminders'},
+        {text:'WhatsApp attendance reports'},
+        {text:'Bulk import / export · PDF & Excel'},
+        {text:'Enquiry & lead management'},
+        {text:'Class log & activity audit'},
+        {text:'15-day snapshots · Priority email'},
+      ], ideal:'Established academies · multi-batch centres'
+    },
+    { code:'premium', name:'Premium', is_recommended:false,
+      tagline:'For professional academies and multi-branch operations',
+      price_monthly:2999, price_annual:29999,
+      features:[
+        {text:'Everything in Pro', lim:'Unlimited students'},
+        {text:'Up to 20 staff'},
+        {text:'Performance tracking & leaderboards'},
+        {text:'Staff task scheduler & leave management'},
+        {text:'30-day data snapshots'},
+        {text:'Priority WhatsApp & email support'},
+      ], ideal:'Large academies · chains · sports institutes'
+    }
+  ];
+
   async function fzOpenPlans() {
     document.getElementById('fzPlansOverlay').classList.add('show');
     document.body.style.overflow = 'hidden';
-    if (!_fzPlans) await fzLoadStatus();
+    if (!_fzPlans || _fzPlans.length===0) await fzLoadStatus();
     fzRenderPlans();
+    fzRenderContactRow();
   }
   function fzClosePlans() {
     document.getElementById('fzPlansOverlay').classList.remove('show');
@@ -14264,61 +15057,101 @@ function initNotifSystem() {
   }
   function fzSetBilling(b) {
     _fzBilling = b;
-    document.getElementById('fzBillMonthly').classList.toggle('active', b === 'monthly');
-    document.getElementById('fzBillAnnual').classList.toggle('active', b === 'annual');
-    fzRenderPlans();
+    document.getElementById('fzBillMonthly').classList.toggle('active', b==='monthly');
+    document.getElementById('fzBillAnnual').classList.toggle('active', b==='annual');
+    fzRenderPlans(); fzUpdateCta();
   }
+
   function fzRenderPlans() {
-    if (!_fzPlans || _fzPlans.length === 0) {
-      document.getElementById('fzPlansGrid').innerHTML = '<div style="padding:20px;text-align:center;color:#8a8f9c;grid-column:1/-1;">No plans configured.</div>';
-      return;
+    const fmt = n => '₹' + Number(n).toLocaleString('en-IN',{maximumFractionDigits:0});
+    const plans = (_fzPlans && _fzPlans.length) ? _fzPlans.map(p=>({
+      code:p.code, name:p.name, is_recommended:p.is_recommended, tagline:p.tagline||'',
+      price_monthly:p.price_monthly, price_annual:p.price_annual,
+      features:(p.highlights||[]).map(h=>({text:h})), ideal:''
+    })) : _fzDefaultPlans;
+
+    const proP = plans.find(p=>p.code==='pro')||plans[1];
+    if (proP) {
+      const save = proP.price_monthly*12 - proP.price_annual;
+      const el = document.getElementById('fzDiscountLabel');
+      if (el) el.textContent = 'SAVE '+fmt(save);
     }
-    const fmt = n => '₹' + Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 });
-    document.getElementById('fzPlansGrid').innerHTML = _fzPlans.map(p => {
-      const price = _fzBilling === 'annual' ? p.price_annual : p.price_monthly;
-      const period = _fzBilling === 'annual' ? '/year' : '/month';
-      const features = (p.highlights || []).slice(0, 7);
-      const featuredClass = p.is_recommended ? 'featured' : '';
-      return `
-        <div class="fz-plan-card ${featuredClass}">
-          <div class="fz-plan-name">${escapeHtml(p.name)}</div>
-          <div class="fz-plan-tagline">${escapeHtml(p.tagline || '')}</div>
-          <div class="fz-plan-price">${fmt(price)}<small>${period}</small></div>
-          <div class="fz-plan-period">${_fzBilling === 'annual' ? 'Billed annually' : 'Billed monthly'}</div>
-          <ul class="fz-plan-features">${features.map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul>
-          <button class="fz-plan-btn" onclick="fzSubscribeClick('${p.code}','${_fzBilling}')">Choose ${escapeHtml(p.name)}</button>
-        </div>
-      `;
+
+    document.getElementById('fzPlansGrid').innerHTML = plans.map(p => {
+      const isPro = p.is_recommended;
+      const isSel = p.code === _fzSelectedPlan;
+      const mo    = _fzBilling==='annual' ? Math.round(p.price_annual/12) : p.price_monthly;
+      const save  = p.price_monthly*12 - p.price_annual;
+      const bdr   = (isPro||isSel) ? '2px solid #2563eb' : '0.5px solid #e2e8f0';
+      return '<div class="fz-plan-card'+(isPro?' featured':'')+'" onclick="fzSelectPlan(''+p.code+'')" style="border:'+bdr+';">'
+        +(isPro?'<div class="fz-plan-pop">⭐ Most popular</div>':'')
+        +'<div class="fz-plan-body">'
+        +'<div class="fz-plan-hdr">'
+        +'<div class="fz-plan-left"><div class="fz-plan-name">'+escapeHtml(p.name)+'</div>'
+        +'<div class="fz-plan-tagline">'+escapeHtml(p.tagline)+'</div></div>'
+        +'<div class="fz-plan-right">'
+        +'<div class="fz-plan-price-row"><div class="fz-plan-price">'+fmt(mo)+'</div><div class="fz-plan-per">/month</div></div>'
+        +'<div class="fz-plan-annual '+(_fzBilling==='annual'?'show':'')+'">'+fmt(p.price_annual)+' / year</div>'
+        +'<div class="fz-plan-save '+(_fzBilling==='annual'?'show':'')+'">Save '+fmt(save)+'</div>'
+        +'</div></div>'
+        +'<div class="fz-plan-divider"></div>'
+        +'<div class="fz-plan-feats">'
+        +(p.features||[]).map(f=>'<div class="fz-plan-feat"><i class="ti ti-check fz-plan-feat-check"></i><span>'+escapeHtml(f.text||f)+'</span>'+(f.lim?'<span class="fz-plan-feat-lim">'+escapeHtml(f.lim)+'</span>':'')+'</div>').join('')
+        +(p.ideal?'<div class="fz-plan-feat" style="margin-top:4px;font-style:italic;color:#94a3b8;"><i class="ti ti-users fz-plan-feat-check" style="color:#94a3b8;"></i><span>'+escapeHtml(p.ideal)+'</span></div>':'')
+        +'</div></div></div>';
     }).join('');
+    fzUpdateCta();
   }
 
-  function fzSubscribeClick(plan, billing) {
-    // For now: open WhatsApp to your support number with a pre-filled message.
-    // Later: this will redirect to Razorpay checkout.
+  function fzSelectPlan(code) {
+    _fzSelectedPlan = code;
+    document.querySelectorAll('.fz-plan-card').forEach(el => {
+      const isPro = el.classList.contains('featured');
+      const isMe  = el.getAttribute('onclick') && el.getAttribute('onclick').includes("'"+code+"'");
+      el.style.border = (isMe||isPro) ? '2px solid #2563eb' : '0.5px solid #e2e8f0';
+    });
+    fzUpdateCta();
+  }
+
+  function fzUpdateCta() {
+    const names = {basic:'Basic',pro:'Pro',premium:'Premium'};
+    const bil   = _fzBilling==='annual'?'annual':'monthly';
+    const el    = document.getElementById('fzCtaText');
+    if (el) el.textContent = 'Call to activate '+(names[_fzSelectedPlan]||'Pro')+' · '+bil;
+  }
+
+  function fzRenderContactRow() {
     const cfg = _fzAppConfig || {};
-    const num = (cfg.whatsapp_number || '').replace(/[^0-9+]/g,'').replace(/^\+/,'');
-    const aname = (window.DB && window.DB.settings && window.DB.settings.academyName) || 'my academy';
-    const slug = (window.DB && window.DB.settings && window.DB.settings.slug) || '';
-    const tmpl = cfg.whatsapp_msg_template || 'Hi! I want to subscribe to the {plan} ({billing}) plan for my academy "{academy}" (ID: {slug}). Please share payment details.';
-    const msg = tmpl.replace('{plan}', plan).replace('{billing}', billing).replace('{academy}', aname).replace('{slug}', slug);
-
-    if (!num) {
-      alert('Support contact not configured yet. Please contact us directly.');
-      return;
-    }
-    window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, '_blank');
-
-    // Best-effort: log this click for analytics
-    if (window._sb && window._currentAcademyId) {
-      window._sb.from('audit_log').insert({
-        academy_id: window._currentAcademyId,
-        user_id: 'customer',
-        role: 'admin',
-        action: 'subscribe_click',
-        detail: `Clicked subscribe: ${plan} ${billing}`
-      }).then(()=>{}).catch(()=>{});
-    }
+    const ph1 = cfg.phone_number||cfg.support_phone||'';
+    const ph2 = cfg.phone2||cfg.support_phone2||'';
+    const em  = cfg.support_email||cfg.email||'';
+    const e1=document.getElementById('fzPhone1Link'), e2=document.getElementById('fzPhone2Link'), ee=document.getElementById('fzEmailLink');
+    if(e1){e1.textContent=ph1||'Not set';e1.href=ph1?'tel:'+ph1:'#';}
+    if(e2){e2.textContent=ph2||'Not set';e2.href=ph2?'tel:'+ph2:'#';}
+    if(ee){ee.textContent=em||'Not set';ee.href=em?'mailto:'+em:'#';}
   }
+
+  function fzCallToActivate() {
+    const cfg = _fzAppConfig||{};
+    const ph  = cfg.phone_number||cfg.support_phone||'';
+    if (!ph) { alert('Support phone not configured. Please contact us on WhatsApp.'); return; }
+    window.location.href = 'tel:'+ph.replace(/\s/g,'');
+  }
+
+  function fzSubscribeWhatsApp() {
+    const cfg   = _fzAppConfig||{};
+    const num   = (cfg.whatsapp_number||'').replace(/[^0-9]/g,'');
+    const aname = (window.DB&&window.DB.settings&&window.DB.settings.academyName)||'my academy';
+    const slug  = (window.DB&&window.DB.settings&&window.DB.settings.slug)||'';
+    const fmt   = n => '\u20B9'+Number(n).toLocaleString('en-IN',{maximumFractionDigits:0});
+    const plan  = _fzDefaultPlans.find(p=>p.code===_fzSelectedPlan)||_fzDefaultPlans[1];
+    const price = _fzBilling==='annual' ? fmt(plan.price_annual)+'/year' : fmt(plan.price_monthly)+'/month';
+    const msg   = 'Hi FeeZo! I want to subscribe to the *'+plan.name+'* plan ('+price+', billed '+_fzBilling+') for my academy "'+aname+'" (ID: '+slug+'). Please help me activate.';
+    if (!num) { alert('WhatsApp number not configured. Please contact us directly.'); return; }
+    window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
+  }
+
+  function fzSubscribeClick(plan, billing) { fzSelectPlan(plan); fzSetBilling(billing); fzSubscribeWhatsApp(); }
 
   function escapeHtml(s) {
     if (s == null) return '';
