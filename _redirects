@@ -1,3 +1,0 @@
-# Cloudflare Pages routing
-/admin    /admin.html   200
-/*        /index.html   200
