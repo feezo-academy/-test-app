@@ -5144,7 +5144,8 @@ function planLogRetentionLabel() {
 
 function planStudentLimit() {
   const plan = (DB.settings && DB.settings.plan) || 'trial';
-  return {basic:50, pro:250, premium:null, trial:50, frozen:0}[plan] ?? 50;
+  const limits = {basic:50, pro:250, premium:null, trial:50, frozen:0};
+  return plan in limits ? limits[plan] : 50;
 }
 function planStaffLimit() {
   const plan = (DB.settings && DB.settings.plan) || 'trial';
