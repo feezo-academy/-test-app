@@ -14884,6 +14884,8 @@ function initNotifSystem() {
           if (typeof initFeeFilters === 'function') initFeeFilters();
           // Re-render snapshot list in case retention changed
           if (typeof renderSnapshotList === 'function') renderSnapshotList();
+          //Re-render student list so the count/limit badge reflects the new plan
+          if(typeof renderStudentList==='function') renderStudentList();
           console.log(`FeeZo: plan updated live ${oldPlan} → ${newPlan}`);
         }
       }
