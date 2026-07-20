@@ -13761,6 +13761,11 @@ function computeNotifs() {
     const fk = y + '-' + String(m).padStart(2,'0');
     const feeMonth = DB.fees[fk] || {};
     activeStudents.forEach(s => {
+      // Skip students who hadn't joined yet by this month or who didn't attend it --
+      // same eligibility rules the Fees tab uses, so the bell only flags rows that
+      // would actually appear there as unpaid
+      if (!isEnrolledOnDate(s,y,m,0)) return;
+      if (!studentAttendedMonth(s.id,y,m)) return;
       // Find all sports this student is enrolled in
       const enrSports = (DB.enrollments||[]).filter(e => e.studentId === (s._sid||s.id)).map(e => e.sport);
       if (!enrSports.length) enrSports.push('');
