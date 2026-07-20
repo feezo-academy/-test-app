@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.feezo_academy.twa",
+        "sha256_cert_fingerprints": ["04:15:0C:4F:86:63:C9:2B:DE:57:7C:F9:FD:5B:CF:E7:3D:6C:A0:9D:D8:57:6D:74:6F:C0:DE:DE:7F:AD:CB:EC"]
+      }
+    }]
