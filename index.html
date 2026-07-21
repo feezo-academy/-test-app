@@ -10104,9 +10104,6 @@ async function saveUser() {
       throw new Error(realMsg);
       }
       if (data && data.error) throw new Error(data.error);
-      if (error) throw new Error(error.message || 'Failed to create user');
-      if (data && data.error) throw new Error(data.error);
-
       // Profile is created server-side by the function; reflect locally
       DB.users.push({ id:uid, uid: data && data.uid, email, name:name||email, role, assignedBatches: getSelectedBatchAssignments(), assignedSports: getSelectedSportAssignments() });
       addLog('user', `Added user "${email}" (${role})`);
