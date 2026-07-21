@@ -15142,7 +15142,7 @@ function initNotifSystem() {
       const mo    = _fzBilling==='annual' ? Math.round(p.price_annual/12) : p.price_monthly;
       const save  = p.price_monthly*12 - p.price_annual;
       const bdr   = (isPro||isSel) ? '2px solid #2563eb' : '0.5px solid #e2e8f0';
-      return '<div class="fz-plan-card'+(isPro?' featured':'')+'" onclick="fzSelectPlan(''+p.code+'')" style="border:'+bdr+';">'
+      return '<div class="fz-plan-card'+(isPro?' featured':'')+'" onclick="fzSelectPlan(\"+p.code+'\')" style="border:'+bdr+';">'
         +(isPro?'<div class="fz-plan-pop">⭐ Most popular</div>':'')
         +'<div class="fz-plan-body">'
         +'<div class="fz-plan-hdr">'
