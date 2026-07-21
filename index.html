@@ -10093,6 +10093,17 @@ async function saveUser() {
                 assigned_batches: getSelectedBatchAssignments(),
                 assigned_sports: getSelectedSportAssignments() }
       });
+      if (error) {
+      let realMsg = error.message || 'Failed to create user';
+      if (error.context && typeof error.context.json === 'function') {
+      try {
+      const body = await error.context.json();
+      if (body && body.error) realMsg = body.error;
+      } catch(_) { /* response wasn't JSON — keep generic message */ }
+      }
+      throw new Error(realMsg);
+      }
+      if (data && data.error) throw new Error(data.error);
       if (error) throw new Error(error.message || 'Failed to create user');
       if (data && data.error) throw new Error(data.error);
 
