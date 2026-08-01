@@ -1,0 +1,39 @@
+-> supabase login
+ 
+-> enter the code get from the access token(words will be invisible CLI).[Make sure you are getting the code from correct supabase]
+ 
+-> supabase projects list (to list the projects in the supabase)
+ 
+-> supabase link --project-ref <project id> (to connect the project for pull and push data/schema)
+ 
+-> supabase db dump -f <filename> --linked --data-only (to dump the file locally)
+ 
+-> supabase db dump -f <filename> --linked --schema (to dump the schema alone)
+ 
+-> cat <file name> (to see the data inside the file e.g : backup.sql)
+ 
+-> grep <keyword> <filename> (to see the keyword present in the file i.e: keyword = "CREATE", filename = backup.sql)
+ 
+-> rm -rf <folder>(to delete the folder)
+ 
+-- once backup taken connect the target with same steps --
+ 
+-> supabase login
+ 
+-> enter code
+ 
+-> supabase projects list (to list the projects in the supabase)
+ 
+-> supabase link --project-ref <project id> (to connect the project for pull and push data/schema)
+ 
+-> create directory place it inside e.g : supabase/migrations/2026schema.sql
+ 
+-> supabase db push
+ 
+(Incase it ask for token get it from supabase access token)
+-> export SUPABASE_ACCESS_TOKEN=<get the token from supabase access token>
+ 
+-- once db push complete verify the changes --
+ 
+-> supabase unlink (disconnect from the supabase)
+{Make sure you deleted the access token completey}
