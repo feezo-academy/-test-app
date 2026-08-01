@@ -8895,7 +8895,7 @@ function _buildChartData(months, mode) {
       // if (!classDays.length) return { onTime: 0, notOnTime: 0, label: MONTHS[m-1].substring(0,3) + '\'' + String(y).slice(2) };
       if (!classDays.length){
         const mm=Number(m),yy=Number(y);
-        const lbl=(MONTHS[mm-1] ? MONTHS[mm-1].substring(0,3):'?')+'\"+String(yy).slice(2);
+        const lbl=(MONTHS[mm-1] ? MONTHS[mm-1].substring(0,3):'?')+'\''+String(yy).slice(2);
         return {onTime:0,notOnTime: 0,label:lbl};
       }
       const enrolled = actives.filter(s => isEnrolledOnDate(s, y, m, 0));
