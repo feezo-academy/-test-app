@@ -8892,7 +8892,12 @@ function _buildChartData(months, mode) {
     if (mode === 'present') {
       const prefix = `${y}-${pad(m)}-`;
       const classDays = Object.keys(DB.attendance).filter(k => k.startsWith(prefix) && isClassDay(k));
-      if (!classDays.length) return { onTime: 0, notOnTime: 0, label: MONTHS[m-1].substring(0,3) + '\'' + String(y).slice(2) };
+      // if (!classDays.length) return { onTime: 0, notOnTime: 0, label: MONTHS[m-1].substring(0,3) + '\'' + String(y).slice(2) };
+      if (!classDays.length){
+        const mm=Number(m),yy=Number(y);
+        const lbl=(MONTHS[mm-1] ? MONTHS[mm-1].substring(0,3):'?')+'\"+String(yy).slice(2);
+        return {onTime:0,notOnTime: 0,label:lbl};
+      }
       const enrolled = actives.filter(s => isEnrolledOnDate(s, y, m, 0));
       const attended = enrolled.filter(s => studentAttendedMonth(s.id, y, m));
       return { onTime: attended.length, notOnTime: enrolled.length - attended.length, label: MONTHS[m-1].substring(0,3) + '\'' + String(y).slice(2) };
